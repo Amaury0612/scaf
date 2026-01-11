@@ -13,10 +13,9 @@
             --primary: #00f2ff;
             --primary-dim: rgba(0, 242, 255, 0.1);
             --bg-dark: #020617;
-            --bg-card: #0f172a;
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
-            --accent: #f43f5e;
+            --nav-height: 70px;
         }
 
         * { box-sizing: border-box; }
@@ -28,164 +27,139 @@
             margin: 0;
             height: 100vh;
             width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            overflow: hidden; /* AUCUN SCROLL GLOBAL */
         }
 
         .presentation-wrapper {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-            background: var(--bg-dark);
             display: flex;
             flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            background: var(--bg-dark);
         }
 
-        /* HUD Overlays */
+        /* HUD Overlay Fixé */
         .hud-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 10;
         }
         .hud-corner {
-            position: absolute; width: 35px; height: 35px;
+            position: absolute; width: 25px; height: 25px;
             border: 2px solid var(--primary); opacity: 0.2;
         }
-        .tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
-        .tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
-        .bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
-        .br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+        .tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+        .bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+        .br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
 
-        .scanline {
-            width: 100%; height: 2px; background: rgba(0, 242, 255, 0.03);
-            position: absolute; animation: scan 8s linear infinite; z-index: 11;
-        }
-        @keyframes scan { from { top: 0; } to { top: 100%; } }
-
-        /* --- CONTENT AREA --- */
+        /* --- ZONE DE CONTENU --- */
         #slide-container {
             flex: 1;
-            padding: 5vh 8vw;
+            padding: 3vh 5vw;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* Bloque le dépassement vertical */
+            background: radial-gradient(circle at center, #0f172a 0%, #000 100%);
             position: relative;
-            overflow: hidden;
         }
 
         .slide-content {
-            height: 100%;
             display: flex;
             flex-direction: column;
-            animation: slideIn 0.4s ease-out forwards;
+            height: 100%;
+            gap: 15px;
+            animation: slideIn 0.3s ease-out;
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: scale(1.02); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .header-line {
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px dashed var(--primary-dim);
-            padding-bottom: 15px; margin-bottom: 25px;
+            border-bottom: 1px solid var(--primary-dim);
+            padding-bottom: 5px;
+            flex-shrink: 0;
         }
 
-        .body-layout { display: flex; gap: 4vw; flex: 1; align-items: center; }
-        .text-part { flex: 1; }
-        .visual-part { flex: 1; height: 60vh; position: relative; }
+        .body-layout { 
+            display: flex; 
+            gap: 30px; 
+            flex: 1; 
+            min-height: 0; 
+            align-items: center;
+        }
 
-        /* Image Display */
+        .text-part { flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; }
+        .visual-part { flex: 1.2; height: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; }
+
+        /* Images */
         .image-box {
             width: 100%; height: 100%;
-            background: #0f172a; border: 1px solid var(--primary-dim);
+            background: #000; border: 1px solid var(--primary-dim);
             border-radius: 4px; overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .image-box img { width: 100%; height: 100%; object-fit: cover; }
-        .img-placeholder { 
-            position: absolute; font-family: 'JetBrains Mono'; color: var(--primary); 
-            text-align: center; font-size: 11px; padding: 30px; text-transform: uppercase;
-            background: rgba(0, 242, 255, 0.05); width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-        }
 
-        /* Typography */
-        h1, h2, h3 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; margin: 0; }
-        .mono { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--primary); letter-spacing: 2px; }
-        
-        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .card { 
-            background: rgba(255,255,255,0.03); padding: 15px; border-left: 3px solid var(--primary); 
-            border-radius: 2px;
-        }
-        .card h4 { font-size: 15px; color: var(--primary); margin: 0 0 5px 0; font-family: 'Orbitron'; }
-        .card p { font-size: 14px; color: var(--text-dim); margin: 0; line-height: 1.4; }
-
-        /* Multi Image Grid for Slide 3 */
+        /* Grille Slide 3 */
         .multi-img-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 15px;
-            width: 100%;
-            height: 100%;
+            display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+            gap: 10px; width: 100%; height: 100%;
+        }
+        .grid-item { position: relative; border: 1px solid var(--primary-dim); overflow: hidden; background: #000; }
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; }
+        .grid-label { 
+            position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8);
+            color: var(--primary); font-family: 'JetBrains Mono'; font-size: 10px; padding: 3px; text-align: center;
         }
 
-        /* Company Grid for Slide 6 */
-        .company-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 20px;
-            width: 100%;
-            height: 100%;
+        /* Slide 6 (Entreprises Seules) */
+        .company-list {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; align-content: center;
         }
-        .company-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--primary-dim);
-            padding: 15px;
-            text-align: center;
-        }
-        .company-item .img-wrapper {
-            width: 100%;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-        .company-item img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        /* --- CONTROLS --- */
-        .nav-bar {
-            padding: 20px 40px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0,0,0,0.5);
-            border-top: 1px solid rgba(255,255,255,0.05);
-            z-index: 100;
-        }
-
-        .btn-group { display: flex; gap: 15px; position: absolute; left: 50%; transform: translateX(-50%); }
-        .btn {
+        .company-name-card {
             background: var(--primary-dim); border: 1px solid var(--primary);
-            color: var(--primary); padding: 12px 30px; cursor: pointer;
-            font-family: 'Orbitron'; font-size: 14px; border-radius: 4px;
-            transition: all 0.2s;
+            padding: 20px; text-align: center; border-radius: 4px;
+            font-family: 'Orbitron'; font-size: 18px; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 2px;
         }
-        .btn:hover:not(:disabled) { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
-        .btn:disabled { opacity: 0.1; cursor: not-allowed; }
 
-        .progress-text { font-family: 'JetBrains Mono'; font-size: 16px; color: var(--text-dim); }
+        /* Typographie */
+        h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(24px, 4.5vh, 55px); margin: 0; color: var(--primary); }
+        h2 { font-family: 'Orbitron', sans-serif; font-size: clamp(14px, 2.2vh, 20px); margin: 0; opacity: 0.8; }
+        h3 { font-family: 'Orbitron', sans-serif; font-size: clamp(18px, 2.8vh, 26px); margin: 0; color: #fff; }
+        
+        .mono { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--primary); letter-spacing: 1px; }
+        
+        .card { 
+            background: rgba(255,255,255,0.03); padding: 10px 15px; border-left: 3px solid var(--primary); 
+            margin-top: 10px;
+        }
+        .card h4 { font-size: 13px; color: var(--primary); margin: 0 0 2px 0; font-family: 'Orbitron'; }
+        .card p { font-size: 12px; color: var(--text-dim); margin: 0; line-height: 1.3; }
 
-        .cover-layout { text-align: center; justify-content: center; align-items: center; flex: 1; display: flex; flex-direction: column; }
+        /* --- NAVIGATION --- */
+        .nav-bar {
+            height: var(--nav-height);
+            padding: 0 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: #000;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            flex-shrink: 0; z-index: 20;
+        }
+
+        .btn-group { display: flex; gap: 15px; }
+        .nav-btn {
+            background: transparent; border: 1px solid var(--primary);
+            color: var(--primary); padding: 8px 25px; cursor: pointer;
+            font-family: 'Orbitron'; font-size: 11px; border-radius: 2px;
+            transition: 0.2s; text-transform: uppercase;
+        }
+        .nav-btn:hover:not(:disabled) { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary-dim); }
+        .nav-btn:disabled { opacity: 0.1; cursor: not-allowed; }
+
+        .progress-text { font-family: 'JetBrains Mono'; font-size: 14px; color: var(--text-dim); }
+
+        .centered-slide { align-items: center; justify-content: center; text-align: center; flex: 1; display: flex; flex-direction: column; }
     </style>
 </head>
 <body>
@@ -194,7 +168,6 @@
         <div class="hud-overlay">
             <div class="hud-corner tl"></div><div class="hud-corner tr"></div>
             <div class="hud-corner bl"></div><div class="hud-corner br"></div>
-            <div class="scanline"></div>
         </div>
 
         <div id="slide-container"></div>
@@ -202,130 +175,112 @@
         <div class="nav-bar">
             <div class="progress-text" id="slide-index">01 / 09</div>
             <div class="btn-group">
-                <button class="btn" onclick="changeSlide(-1)" id="prevBtn">PREVIOUS</button>
-                <button class="btn" onclick="changeSlide(1)" id="nextBtn">NEXT</button>
+                <button class="nav-btn" onclick="changeSlide(-1)" id="prevBtn">PREVIOUS</button>
+                <button class="nav-btn" onclick="changeSlide(1)" id="nextBtn">NEXT</button>
             </div>
+            <div class="mono" style="opacity: 0.4;">SCAF HUD INTERFACE</div>
         </div>
     </div>
 
     <script>
-        /** * ==========================================
-         * CONTENU MODIFIABLE (DATA)
-         * ========================================== */
         const presentationData = [
             {
                 type: "cover",
-                badge: "[ SCAF PROGRAM: 2045 ]",
+                badge: "[ PROGRAM STATUS: OPERATIONAL ]",
                 title: "Future Support",
                 subtitle: "6th Generation Fighter Development",
                 status: "OBJECTIVE: PROJECT SCAF",
-                image: "Slide1.jpg",
-                imageLabel: "SLIDE 1: SCAF CONCEPT"
+                image: "https://www.leparisien.fr/resizer/SOlIBNQaL28LGtFkoXoGDp6HENY=/arc-anglerfish-eu-central-1-prod-leparisien/public/RTQX25NP4JEO5EGMO34MPKTAXA.jpg"
             },
             {
-                type: "grid",
+                type: "summary",
                 header: "// 01. SUMMARY",
-                title: "Summary",
+                title: "Outline",
                 grid: [
-                    { h: "01. Previous Generations", p: "Recap of Gen 4 and Gen 5." },
-                    { h: "02. 6th Generation", p: "Technological improvements and FCAS capabilities." },
-                    { h: "03. SCAF Project", p: "The European tri-national alliance." },
-                    { h: "04. The Actors", p: "Industrial partners: Airbus, Dassault, etc." },
-                    { h: "05. Components", p: "NGF, Remote Carriers & Combat Cloud." },
-                    { h: "06. Stakes", p: "Strategic interests and current roadblocks." }
+                    { h: "01. History", p: "Gen 4 & 5 Recap." },
+                    { h: "02. 6th Gen", p: "Improvements." },
+                    { h: "03. Alliance", p: "EU cooperation." },
+                    { h: "04. Actors", p: "Industry leaders." },
+                    { h: "05. Components", p: "System of systems." },
+                    { h: "06. Stakes", p: "Strategic friction." }
                 ]
             },
             {
-                type: "standard_multi",
-                header: "// 02. EVOLUTIONARY STEPS",
-                title: "Previous Generations",
-                desc: "Comparing the technology of Gen 4 and Gen 5 aircraft.",
+                type: "multi",
+                header: "// 02. PREVIOUS GENERATIONS",
+                title: "Evolution",
                 cards: [
-                    { h: "Generation 4", p: "Rafale & Typhoon: Multi-role supremacy." },
-                    { h: "Generation 5", p: "F-35 & Su-57: Stealth and data fusion." }
+                    { h: "Gen 4", p: "Rafale / Typhoon" },
+                    { h: "Gen 5", p: "F-35 / Su-57" }
                 ],
-                images: ["rafale.jpg", "typhoon.jpg", "f35.jpg", "su57.jpg"],
-                imageLabels: ["Gen 4: Rafale", "Gen 4: Typhoon", "Gen 5: F-35", "Gen 5: Su-57"]
+                images: [
+                    "https://upload.wikimedia.org/wikipedia/commons/6/64/Rafale_-_RIAT_2009_%283751416421%29.jpg",
+                    "https://upload.wikimedia.org/wikipedia/commons/3/3c/RAF_Eurofighter_EF-2000_Typhoon_F2_Lofting-1.jpg",
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9m7TK6ZOWXQZtBidGgOzHyf-ij8UvXZgOHQ&s",
+                    "https://www.twz.com/wp-content/uploads/2025/11/su-57-updates-dubai-airshow.jpg?w=1200"
+                ],
+                imageLabels: ["Rafale", "Typhoon", "F-35", "Su-57"]
             },
             {
                 type: "standard",
-                header: "// 03. 6TH GENERATION DEFINITION",
-                title: "Sixth Generation",
-                desc: "Improvements over previous generations.",
+                header: "// 03. 6TH GENERATION",
+                title: "Key Definition",
                 cards: [
-                    { h: "Artificial Intelligence", p: "Real-time decision support for the pilot." },
-                    { h: "Remote Carriers", p: "Collaborative drones for escort and strike." },
-                    { h: "Stealth", p: "Advanced discretion in contested airspace." },
-                    { h: "Information Superiority", p: "Powerful sensors and combat cloud networking." }
+                    { h: "AI Assistance", p: "Real-time pilot support." },
+                    { h: "Drones", p: "Remote carriers wingmen." },
+                    { h: "Stealth", p: "Total discretion." },
+                    { h: "Information", p: "Battle cloud network." }
                 ],
-                image: "droneslide7.jpg",
-                imageLabel: "6TH GEN: THE SYSTEM OF SYSTEMS"
+                image: "https://www.toolshero.com/wp-content/uploads/2023/01/artificial-intelligence-ai-toolshero.jpg"
             },
             {
                 type: "standard",
-                header: "// 04. THE SCAF ALLIANCE",
-                title: "A Tri-National Project",
-                desc: "FCAS: Future Combat Air System.",
+                header: "// 04. THE ALLIANCE",
+                title: "Strategic Link",
                 cards: [
-                    { h: "France", p: "Dassault Aviation leading the fighter design." },
-                    { h: "Germany", p: "Airbus leading the systems integration." },
-                    { h: "Spain", p: "Indra leading the sensor technology." }
+                    { h: "France", p: "Strategic leadership." },
+                    { h: "Germany", p: "Propulsion/Systems." },
+                    { h: "Spain", p: "Sensors/Networking." }
                 ],
-                image: "satelliteslide4.jpg",
-                imageLabel: "EUROPEAN COOPERATION"
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQU4pPWj0h_1aiEv_ISe3Gzd_T34PZ4awmwag&s"
             },
             {
-                type: "company_grid",
+                type: "companies",
                 header: "// 05. INDUSTRIAL ACTORS",
-                title: "Who builds what?",
-                companies: [
-                    { n: "Airbus", img: "Airbusslide6.webp" },
-                    { n: "Dassault Aviation", img: "dassaultslide6.jpg" },
-                    { n: "Safran", img: "safranslide6.jpg" },
-                    { n: "Thales", img: "thalesslide6.jpg" },
-                    { n: "Indra", img: "indragroupslide5.webp" },
-                    { n: "MBDA", img: "MBDAslide6.jpg" }
-                ]
+                title: "Main Partners",
+                names: ["Airbus", "Dassault Aviation", "Safran", "Thales", "Indra", "MBDA"]
             },
             {
                 type: "standard",
                 header: "// 06. ECOSYSTEM",
-                title: "Components of SCAF",
-                desc: "Interconnected combat environment.",
+                title: "System of Systems",
                 cards: [
-                    { h: "NGF (Core)", p: "Next Generation Fighter jet." },
-                    { h: "Remote Carriers", p: "Autonomous escort drones." },
-                    { h: "Combat Cloud", p: "Tactical data network." },
-                    { h: "Satellites", p: "Space-based surveillance." }
+                    { h: "Fighter", p: "NGF Platform." },
+                    { h: "Carriers", p: "Drones." },
+                    { h: "Cloud", p: "Data link." }
                 ],
-                image: "droneslide7.jpg",
-                imageLabel: "THE SCAF ECOSYSTEM"
+                image: "https://www.nae.fr/wp-content/uploads/2024/06/001511955_896x598_c.jpg"
             },
             {
-                type: "alert",
-                header: "// 07. STRATEGIC CHALLENGES",
-                title: "Strategic Challenges",
-                desc: "Political and industrial friction slowing the progress.",
+                type: "standard",
+                header: "// 07. CHALLENGES",
+                title: "Friction",
                 cards: [
-                    { h: "Workshare", p: "Leadership disputes between partners." },
-                    { h: "Budget", p: "High development costs and priorities." },
-                    { h: "Technology", p: "Sharing critical defense secrets." }
+                    { h: "Workshare", p: "Tasks balance." },
+                    { h: "Intellectual Property", p: "Tech secrets." }
                 ],
-                image: "macronscafslide8.jpg",
-                imageLabel: "POLITICAL TENSIONS"
+                image: "https://www.boursorama.com/static/i/content/images/6/0/1/601b367e67db7cafddb469fd469333cf-760x507.jpg"
             },
             {
                 type: "cover",
-                badge: "[ DEBRIEFING COMPLETED ]",
+                badge: "[ END OF MISSION ]",
                 title: "QUESTIONS?",
-                subtitle: "The 6th Generation: Thinking Faster.",
-                status: "END OF PRESENTATION",
-                image: "",
-                imageLabel: ""
+                subtitle: "Mission Debriefing",
+                status: "READY FOR DISCUSSION",
+                image: ""
             }
         ];
 
-        /** NAVIGATION LOGIC **/
         let currentIndex = 0;
 
         function renderSlide() {
@@ -335,117 +290,68 @@
 
             if (data.type === "cover") {
                 html = `
-                    <div class="slide-content cover-layout">
+                    <div class="centered-slide">
                         <div class="mono">${data.badge}</div>
-                        <h1 style="font-size: 80px; color: var(--primary);">${data.title}</h1>
-                        <h2 style="font-size: 26px; margin-top: 10px; opacity: 0.8;">${data.subtitle}</h2>
-                        <div class="mono" style="margin-top: 50px; border: 1px solid var(--primary); padding: 5px 20px;">>> ${data.status}</div>
+                        <h1>${data.title}</h1>
+                        <h2>${data.subtitle}</h2>
+                        <div class="mono" style="margin-top: 10px; border: 1px solid var(--primary); padding: 5px 20px;">>> ${data.status}</div>
                         ${data.image ? `
-                        <div class="visual-part" style="width: 60vw; height: 50vh; margin-top: 40px;">
-                            <div class="image-box">
-                                <img src="${data.image}" alt="img" onerror="this.nextElementSibling.style.display='flex';this.style.display='none'">
-                                <div class="img-placeholder" style="display:none;">${data.imageLabel}</div>
-                            </div>
+                        <div class="visual-part" style="width: 50%; height: 40%; margin-top: 20px;">
+                            <div class="image-box"><img src="${data.image}"></div>
                         </div>` : ''}
                     </div>
                 `;
-            } else if (data.type === "standard" || data.type === "alert") {
-                const colorAttr = data.type === "alert" ? 'style="color:var(--accent)"' : '';
+            } else if (data.type === "summary") {
                 html = `
                     <div class="slide-content">
-                        <div class="header-line">
-                            <div class="mono" ${colorAttr}>${data.header}</div>
-                        </div>
-                        <div class="body-layout">
-                            <div class="text-part">
-                                <h3 ${colorAttr}>${data.title}</h3>
-                                <p style="color: var(--text-dim); font-size: 16px; margin-bottom: 25px;">${data.desc}</p>
-                                <div class="card-grid">
-                                    ${data.cards.map(c => `
-                                        <div class="card" ${data.type === 'alert' ? 'style="border-color:var(--accent)"' : ''}>
-                                            <h4>${c.h}</h4>
-                                            <p>${c.p}</p>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            <div class="visual-part">
-                                <div class="image-box" ${data.type === 'alert' ? 'style="border-color:var(--accent)"' : ''}>
-                                    <img src="${data.image}" alt="img" onerror="this.nextElementSibling.style.display='flex';this.style.display='none'">
-                                    <div class="img-placeholder" style="display:none;">${data.imageLabel}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (data.type === "standard_multi") {
-                html = `
-                    <div class="slide-content">
-                        <div class="header-line">
-                            <div class="mono">${data.header}</div>
-                        </div>
-                        <div class="body-layout">
-                            <div class="text-part">
-                                <h3>${data.title}</h3>
-                                <p style="color: var(--text-dim); font-size: 16px; margin-bottom: 25px;">${data.desc}</p>
-                                <div class="card-grid">
-                                    ${data.cards.map(c => `
-                                        <div class="card">
-                                            <h4>${c.h}</h4>
-                                            <p>${c.p}</p>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            <div class="visual-part">
-                                <div class="multi-img-grid">
-                                    ${data.images.map((img, idx) => `
-                                        <div class="image-box">
-                                            <img src="${img}" alt="img" onerror="this.nextElementSibling.style.display='flex';this.style.display='none'">
-                                            <div class="img-placeholder" style="display:none;">${data.imageLabels[idx]}</div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (data.type === "company_grid") {
-                html = `
-                    <div class="slide-content">
-                        <div class="header-line">
-                            <div class="mono">${data.header}</div>
-                        </div>
+                        <div class="header-line"><div class="mono">${data.header}</div></div>
                         <h3>${data.title}</h3>
-                        <div class="company-grid" style="margin-top: 30px;">
-                            ${data.companies.map(c => `
-                                <div class="company-item">
-                                    <div class="img-wrapper">
-                                        <img src="${c.img}" alt="${c.n}" onerror="this.nextElementSibling.style.display='block';this.style.display='none'">
-                                        <div class="img-placeholder" style="display:none;">${c.n}</div>
-                                    </div>
-                                    <div class="mono" style="margin-top:10px; font-size:12px;">${c.n}</div>
-                                </div>
+                        <div class="company-list" style="flex: 1; align-content: center;">
+                            ${data.grid.map(c => `
+                                <div class="card"><h4>${c.h}</h4><p>${c.p}</p></div>
                             `).join('')}
                         </div>
                     </div>
                 `;
-            } else if (data.type === "grid") {
+            } else if (data.type === "standard") {
                 html = `
                     <div class="slide-content">
-                        <div class="header-line">
-                            <div class="mono">${data.header}</div>
-                        </div>
-                        <div class="text-side">
-                            <h3>${data.title}</h3>
-                            <div class="card-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 40px; gap: 20px;">
-                                ${data.grid.map(c => `
-                                    <div class="card">
-                                        <h4>${c.h}</h4>
-                                        <p>${c.p}</p>
-                                    </div>
-                                `).join('')}
+                        <div class="header-line"><div class="mono">${data.header}</div></div>
+                        <div class="body-layout">
+                            <div class="text-part">
+                                <h3>${data.title}</h3>
+                                ${data.cards.map(c => `<div class="card"><h4>${c.h}</h4><p>${c.p}</p></div>`).join('')}
                             </div>
+                            <div class="visual-part"><div class="image-box"><img src="${data.image}"></div></div>
+                        </div>
+                    </div>
+                `;
+            } else if (data.type === "multi") {
+                html = `
+                    <div class="slide-content">
+                        <div class="header-line"><div class="mono">${data.header}</div></div>
+                        <div class="body-layout">
+                            <div class="text-part">
+                                <h3>${data.title}</h3>
+                                ${data.cards.map(c => `<div class="card"><h4>${c.h}</h4><p>${c.p}</p></div>`).join('')}
+                            </div>
+                            <div class="visual-part">
+                                <div class="multi-img-grid">
+                                    ${data.images.map((img, idx) => `
+                                        <div class="grid-item"><img src="${img}"><div class="grid-label">${data.imageLabels[idx]}</div></div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (data.type === "companies") {
+                html = `
+                    <div class="slide-content">
+                        <div class="header-line"><div class="mono">${data.header}</div></div>
+                        <h3 style="text-align: center; margin-bottom: 20px;">${data.title}</h3>
+                        <div class="company-list" style="flex: 1;">
+                            ${data.names.map(name => `<div class="company-name-card">${name}</div>`).join('')}
                         </div>
                     </div>
                 `;
@@ -458,10 +364,11 @@
         }
 
         function changeSlide(dir) {
-            currentIndex += dir;
-            if (currentIndex < 0) currentIndex = 0;
-            if (currentIndex >= presentationData.length) currentIndex = presentationData.length - 1;
-            renderSlide();
+            const next = currentIndex + dir;
+            if (next >= 0 && next < presentationData.length) {
+                currentIndex = next;
+                renderSlide();
+            }
         }
 
         document.addEventListener('keydown', (e) => {
@@ -469,7 +376,7 @@
             if (e.key === "ArrowLeft") changeSlide(-1);
         });
 
-        renderSlide();
+        window.onload = renderSlide;
     </script>
 </body>
 </html>
