@@ -34,56 +34,49 @@
             transition: background-color 0.5s ease;
         }
 
-        /* --- PROTOCOLE D'HORREUR NUMÉRIQUE --- */
+        /* --- DIGITAL HORROR PROTOCOL --- */
         .corrupt-shake { animation: glitchShake 0.1s infinite; }
         @keyframes glitchShake {
-            0% { transform: translate(2px, 1px); }
+            0% { transform: translate(1px, 1px); }
             50% { transform: translate(-2px, -1px); }
             100% { transform: translate(1px, -2px); }
         }
-
         .corrupt-jump span { display: inline-block; animation: letterJump 0.2s infinite alternate; }
         @keyframes letterJump {
             from { transform: translateY(0); }
-            to { transform: translateY(-12px); filter: blur(2px); color: var(--warning); }
+            to { transform: translateY(-10px); filter: blur(2px); color: var(--warning); }
         }
-
-        .corrupt-saturate img { filter: saturate(35) contrast(5) brightness(1.5) !important; }
-        .corrupt-red-blur img { filter: saturate(8) blur(25px) sepia(1) hue-rotate(-50deg) !important; transition: 0.8s; }
-        .corrupt-red-alert { --primary: #f43f5e !important; --primary-dim: rgba(244, 63, 94, 0.6) !important; }
-
-        .corrupt-broken { animation: shatterEffect 0.3s infinite alternate; }
+        .corrupt-saturate img { filter: saturate(25) contrast(4) brightness(1.2) !important; }
+        .corrupt-red-blur img { filter: saturate(5) blur(20px) sepia(1) hue-rotate(-50deg) !important; transition: 1s; }
+        .corrupt-red-alert { --primary: #f43f5e !important; --primary-dim: rgba(244, 63, 94, 0.5) !important; }
+        .corrupt-broken { animation: shatterEffect 0.5s infinite alternate; }
         @keyframes shatterEffect {
             0% { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
-            100% { clip-path: polygon(10% 5%, 90% 2%, 98% 85%, 2% 95%); transform: scale(1.05) rotate(1deg); }
+            100% { clip-path: polygon(5% 5%, 95% 2%, 100% 90%, 2% 98%); transform: scale(1.02) rotate(0.5deg); }
         }
-
         .corrupt-drips::after {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 300%;
-            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.98) 3%, black 100%);
-            background-size: 15% 100%; animation: drippingDeath 5s cubic-bezier(0.6, 0, 1, 1) forwards;
-            z-index: 500; pointer-events: none;
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 250%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.95) 5%, black 100%);
+            background-size: 12% 100%; animation: drippingBlood 8s forwards; z-index: 100; pointer-events: none;
         }
-        @keyframes drippingDeath { from { transform: translateY(-100%); } to { transform: translateY(0%); } }
-
+        @keyframes drippingBlood { from { transform: translateY(-100%); } to { transform: translateY(0%); } }
         .corrupt-noise::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://upload.wikimedia.org/wikipedia/commons/b/b1/White_noise.png');
-            opacity: 0.5; z-index: 1000; pointer-events: none; animation: staticNoise 0.02s infinite;
+            opacity: 0.3; z-index: 1000; pointer-events: none; animation: flickerNoise 0.05s infinite;
         }
-        @keyframes staticNoise { 0% { opacity: 0.3; } 100% { opacity: 0.7; } }
-
-        .corrupt-final { filter: invert(1) contrast(50) !important; opacity: 0 !important; transition: 3s ease-in; }
+        @keyframes flickerNoise { 0% { opacity: 0.2; } 100% { opacity: 0.4; } }
+        .corrupt-final { filter: invert(1) contrast(15) !important; opacity: 0 !important; transition: 5s ease-in; }
 
         /* --- STRUCTURE --- */
         .presentation-wrapper { display: flex; flex-direction: column; height: 100vh; width: 100vw; background: var(--bg-dark); position: relative; }
         #slide-container { flex: 1; padding: 20px 60px; display: flex; flex-direction: column; background: radial-gradient(circle at center, #0f172a 0%, #000 100%); position: relative; overflow: hidden; min-height: 0; }
         .slide-content { display: flex; flex-direction: column; height: 100%; width: 100%; justify-content: center; min-height: 0; }
 
-        /* HEADER BAND AGRANDI */
-        .header-line { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-dim); padding-bottom: 12px; margin-bottom: 15px; flex-shrink: 0; }
-        .tactical-timer { font-family: 'JetBrains Mono'; font-size: 20px; color: var(--primary); background: rgba(0,0,0,0.7); padding: 10px 25px; border: 1px solid var(--primary-dim); border-radius: 4px; box-shadow: 0 0 15px var(--primary-dim); }
-        .header-line .mono { font-size: 22px; }
+        /* HEADER BAND - COMPACT LABELS / VISIBLE TIMER */
+        .header-line { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-dim); padding-bottom: 10px; margin-bottom: 12px; flex-shrink: 0; }
+        .tactical-timer { font-family: 'JetBrains Mono'; font-size: 16px; color: var(--primary); background: rgba(0,0,0,0.7); padding: 6px 15px; border: 1px solid var(--primary-dim); border-radius: 4px; }
+        .header-line .mono { font-size: 13px; opacity: 0.8; letter-spacing: 2px; }
 
         /* HUD CORNERS */
         .hud-corner { position: absolute; width: 25px; height: 25px; border: 2px solid var(--primary); opacity: 0.3; pointer-events: none; }
@@ -105,12 +98,12 @@
         @keyframes kenBurns { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
 
         /* TYPOGRAPHY PC */
-        h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(35px, 8vh, 75px); margin: 0; color: var(--primary); letter-spacing: -2px; }
-        h3 { font-family: 'Orbitron', sans-serif; font-size: clamp(26px, 4.5vh, 42px); margin: 0 0 10px 0; color: #fff; line-height: 1.1; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(30px, 7vh, 70px); margin: 0; color: var(--primary); letter-spacing: -2px; }
+        h3 { font-family: 'Orbitron', sans-serif; font-size: clamp(24px, 4.2vh, 38px); margin: 0 0 10px 0; color: #fff; line-height: 1.1; }
         .mono { font-family: 'JetBrains Mono', monospace; color: var(--primary); letter-spacing: 2px; }
-        .card { background: rgba(255,255,255,0.03); padding: 18px 22px; border-left: 5px solid var(--primary); margin-top: 10px; backdrop-filter: blur(10px); flex-shrink: 1; }
-        .card h4 { font-size: clamp(16px, 2.2vh, 19px); color: var(--primary); margin: 0 0 4px 0; font-family: 'Orbitron'; }
-        .card p { font-size: clamp(14px, 1.8vh, 17px); color: var(--text-dim); margin: 0; line-height: 1.4; }
+        .card { background: rgba(255,255,255,0.03); padding: 15px 20px; border-left: 5px solid var(--primary); margin-top: 10px; backdrop-filter: blur(10px); flex-shrink: 1; }
+        .card h4 { font-size: clamp(15px, 2vh, 18px); color: var(--primary); margin: 0 0 4px 0; font-family: 'Orbitron'; }
+        .card p { font-size: clamp(13px, 1.7vh, 16px); color: var(--text-dim); margin: 0; line-height: 1.4; }
 
         /* LAYOUTS */
         .body-layout { display: flex; gap: 40px; flex: 1; min-height: 0; align-items: stretch; overflow: hidden; }
@@ -125,8 +118,8 @@
         .company-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 12px; flex: 1; min-height: 0; }
         .company-card { background: var(--primary-dim); border: 1px solid var(--primary); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 4px; padding: 12px; }
 
-        /* SPECTACULAR FINAL TIMER */
-        .big-question-timer { font-size: 115px !important; margin-top: 15px; text-align: center; border: 3px solid var(--primary); padding: 20px 60px; background: rgba(0,0,0,0.85); box-shadow: 0 0 50px var(--primary-dim); z-index: 100; }
+        /* FINAL SPECTACULAR TIMER - ALIGNED WITH TITLE SIZE */
+        .big-question-timer { font-size: 60px !important; margin-top: 15px; text-align: center; border: 2px solid var(--primary); padding: 10px 40px; background: rgba(0,0,0,0.8); z-index: 10; box-shadow: 0 0 30px var(--primary-dim); width: auto !important; }
 
         /* NAVIGATION */
         .nav-bar { height: var(--nav-height); padding: 0 40px; display: flex; justify-content: space-between; align-items: center; background: #000; border-top: 1px solid rgba(255,255,255,0.1); z-index: 2000; flex-shrink: 0; }
@@ -157,14 +150,14 @@
         const presentationData = [
             { type: "cover", title: "Future Support", subtitle: "6th Generation Fighter Development", badge: "[ MISSION START ]", image: "https://www.leparisien.fr/resizer/SOlIBNQaL28LGtFkoXoGDp6HENY=/arc-anglerfish-eu-central-1-prod-leparisien/public/RTQX25NP4JEO5EGMO34MPKTAXA.jpg", time: 90 },
             { type: "summary", header: "// 01. MISSION_SUMMARY", title: "Presentation Outline", grid: [{ h: "01. History", p: "Recap Gen 4 & 5." }, { h: "02. New Gen", p: "Future pillars." }, { h: "03. SCAF Project", p: "Roadmap & Deadlines." }, { h: "04. Alliance", p: "EU Strategic Power." }, { h: "05. Actors", p: "Industrial Share." }, { h: "06. Stakes", p: "Strategic Friction." }], time: 90 },
-            { type: "multi-gen", header: "// 02. GEN_EVOLUTION", title: "Evolution", cards: [{ h: "Gen 4 Detail", p: "Digital flight controls and polyvalence." }, { h: "Gen 5 Detail", p: "Full passive stealth and sensor fusion." }], images: ["https://upload.wikimedia.org/wikipedia/commons/6/64/Rafale_-_RIAT_2009_%283751416421%29.jpg", "https://upload.wikimedia.org/wikipedia/commons/3/3c/RAF_Eurofighter_EF-2000_Typhoon_F2_Lofting-1.jpg", "https://media.istockphoto.com/id/474030760/fr/photo/f35-avion-de-chass%C3%A0-une-vitesse-supersonique.jpg?s=612x612&w=0&k=20&c=JPGkPkl0fYQnmnWq3gI1VmuCMei68YaIhGYWqHA7ojs=", "https://www.twz.com/wp-content/uploads/2025/11/su-57-updates-dubai-airshow.jpg?w=1200"], imageLabels: ["RAFALE", "TYPHOON", "F-35", "SU-57"], time: 90 },
-            { type: "standard", header: "// 03. 6TH_GEN_TECH", title: "Next Generation", cards: [{ h: "AI Systems", p: "Real-time pilot decision support." }, { h: "Remote swarms", p: "Loyal wingmen for saturation." }, { h: "Stealth 2.0", p: "Broadband active invisibility." }, { h: "Tactical Cloud", p: "Hyper-connected combat mesh." }], image: "https://miro.medium.com/v2/resize:fit:1400/1*VnDOy_Rupp-Qy39UAXLP8w.jpeg", time: 90 },
+            { type: "multi-gen", header: "// 02. GEN_EVOLUTION", title: "Evolution", cards: [{ h: "Gen 4 Detail", p: "Digital flight controls and polyvalence." }, { h: "Gen 5 Detail", p: "Full passive stealth and sensor fusion." }], images: ["https://upload.wikimedia.org/wikipedia/commons/6/64/Rafale_-_RIAT_2009_%283751416421%29.jpg", "https://upload.wikimedia.org/wikipedia/commons/3/3c/RAF_Eurofighter_EF-2000_Typhoon_F2_Lofting-1.jpg", "https://upload.wikimedia.org/wikipedia/commons/6/61/F-35A_flight_test_AF-1.jpg", "https://upload.wikimedia.org/wikipedia/commons/b/b8/Sukhoi_Su-57_at_MAKS-2019_airshow_%288%29.jpg"], imageLabels: ["RAFALE", "TYPHOON", "F-35", "SU-57"], time: 90 },
+            { type: "standard", header: "// 03. 6TH_GEN_TECH", title: "Next Generation", cards: [{ h: "AI Systems", p: "Real-time pilot decision assistance." }, { h: "Remote swarms", p: "Loyal wingmen for saturation." }, { h: "Stealth 2.0", p: "Broadband active invisibility." }, { h: "Tactical Cloud", p: "Hyper-connected combat mesh." }], image: "https://miro.medium.com/v2/resize:fit:1400/1*VnDOy_Rupp-Qy39UAXLP8w.jpeg", time: 90 },
             { type: "standard", header: "// 04. PROGRAM_DATA", title: "The SCAF Project", cards: [{ h: "Launch", p: "Initiated in 2017 (FR/DE), Spain 2019." }, { h: "Deadlines", p: "Demo flight in 2029. Service 2040." }, { h: "Target", p: "Connected system of systems." }], image: "https://images.air-cosmos.com/media/f275769b21870026d48e7f1de4433a61cfff058604bc19353e415f8d2d0bc79b", time: 90 },
             { type: "standard", header: "// 05. STRATEGIC_LINK", title: "European Alliance", cards: [{ h: "France", p: "Leadership and airframe design (Dassault)." }, { h: "Germany", p: "Engines and systems (Airbus/MTU)." }, { h: "Spain", p: "Sensors and tactical cloud (Indra)." }], image: "https://i-wdm.unimedias.fr/2025/07/08/shutterstock_1847866900-scaled-686d32c56a0c8.jpg?auto=format%2Ccompress&crop=faces&cs=tinysrgb&fit=crop&h=501&ixlib=php-4.1.0&w=890", time: 90 },
             { type: "companies", header: "// 06. ACTORS", title: "Industry Pillars", companies: [{ n: "Airbus", c: "FR / DE / ES" }, { n: "Dassault Aviation", c: "France" }, { n: "Safran", c: "France" }, { n: "Thales", c: "France" }, { n: "Indra", c: "Spain" }, { n: "MBDA", c: "FR / DE / ES" }], time: 90 },
             { type: "comm_vertical", header: "// 07. GLOBAL_LINK", title: "Connectivity", cards: [{ h: "NGF Platform", p: "Central stealth brain with AI." }, { h: "Space Link", p: "Real-time satellite tactical sync." }], imgTop: "https://eos.com/wp-content/uploads/2023/03/types-of-satellites.jpg", imgBottom: "https://www.aerotime.aero/images/6th-generation-fighter-jets1-1-800x500.jpg", time: 90 },
             { type: "standard", header: "// 08. FRICTION_ZONES", title: "Key Challenges", cards: [{ h: "Industrial Share", p: "Disputes over flight control leadership." }, { h: "IP Secrets", p: "Sovereignty vs technology sharing." }, { h: "Export Rights", p: "National political restrictions." }], image: "https://www.boursorama.com/static/i/content/images/6/0/1/601b367e67db7cafddb469fd469333cf-760x507.jpg", time: 90 },
-            { type: "final-spectacular", title: "QUESTIONS?", subtitle: "Mission Debriefing", badge: "[ FINAL DEBRIEF ]", imageL: "https://pictures.latribune.fr/cdn-cgi/image/format=auto,width=1200,height=675/517/1318517.jpg", imageR: "https://meta-defense.fr/wp-content/uploads/2024/10/Airbus-Wingman.jpg", time: 10 }
+            { type: "final-spectacular", title: "QUESTIONS?", subtitle: "Mission Debriefing", badge: "[ FINAL DEBRIEF ]", imageL: "https://pictures.latribune.fr/cdn-cgi/image/format=auto,width=1200,height=675/517/1318517.jpg", imageR: "https://meta-defense.fr/wp-content/uploads/2024/10/Airbus-Wingman.jpg", time: 300 }
         ];
 
         let currentIndex = 0, timeLeft = 90, timerInterval;
@@ -180,19 +173,19 @@
             const container = document.getElementById('slide-container'), wrapper = document.getElementById('master-wrapper'), ovr = Math.abs(timeLeft);
             if (timeLeft < 0) {
                 container.classList.add('corrupt-shake');
-                if (ovr >= 5) { 
+                if (ovr >= 10) { 
                     container.classList.add('corrupt-jump');
                     container.querySelectorAll('.image-box img').forEach(img => img.classList.add('corrupt-image', 'corrupt-saturate'));
                     scrambleText(0.4);
                 }
-                if (ovr >= 15) {
+                if (ovr >= 25) {
                     wrapper.classList.add('corrupt-red-alert'); container.classList.add('corrupt-red-blur');
                     scrambleText(0.8);
-                    if (ovr >= 25) { 
+                    if (ovr >= 40) { 
                         container.classList.add('corrupt-noise'); 
                         container.querySelectorAll('.image-box').forEach(box => box.classList.add('corrupt-broken', 'corrupt-drips')); 
                     }
-                    if (ovr >= 45) container.classList.add('corrupt-final');
+                    if (ovr >= 75) container.classList.add('corrupt-final'); // +10s horreur supplémentaire
                 }
             }
         }
@@ -221,11 +214,11 @@
                 </div>`;
             } else if (data.type === "final-spectacular") {
                 html = `<div class="slide-content">
-                    <div class="header-line anim-text-in"><div class="mono">// FINAL_DEBRIEF</div></div>
-                    <div class="body-layout">
-                        <div class="visual-part" style="flex: 1.1;"><div class="image-box scanned">${scanLine}<img src="${data.imageL}"><div class="gen-label" style="position:absolute;bottom:5px;width:100%;">NGF SCAF Concept</div></div></div>
-                        <div class="text-part centered-slide anim-text-in" style="flex: 2.2; min-width: 500px;"><h1>${data.title}</h1><h2 style="font-family:Orbitron; opacity:0.8; font-size:26px; margin-top:10px;">${data.subtitle}</h2>${timerHTML}</div>
-                        <div class="visual-part" style="flex: 1.1;"><div class="image-box scanned">${scanLine}<img src="${data.imageR}"><div class="gen-label" style="position:absolute;bottom:5px;width:100%;">Airbus Wingman</div></div></div>
+                    <div class="header-line anim-text-in"><div class="mono">// FINAL_DEBRIEFING</div></div>
+                    <div class="body-layout" style="align-items: center; gap: 20px;">
+                        <div class="visual-part" style="flex: 1; height: 320px;"><div class="image-box scanned" style="border-radius:8px; overflow:hidden;">${scanLine}<img src="${data.imageL}" style="object-fit: contain; background: #000;"><div class="gen-label" style="position:absolute;bottom:5px;width:100%;">NGF SCAF Concept</div></div></div>
+                        <div class="text-part centered-slide anim-text-in" style="flex: 1.8; min-width: 400px;"><h1>${data.title}</h1><h2 style="font-family:Orbitron; opacity:0.8; font-size:22px; margin-top:5px;">${data.subtitle}</h2>${timerHTML}</div>
+                        <div class="visual-part" style="flex: 1; height: 320px;"><div class="image-box scanned" style="border-radius:8px; overflow:hidden;">${scanLine}<img src="${data.imageR}" style="object-fit: contain; background: #000;"><div class="gen-label" style="position:absolute;bottom:5px;width:100%;">Airbus Wingman</div></div></div>
                     </div>
                 </div>`;
             } else if (data.type === "summary") {
@@ -245,11 +238,30 @@
             document.getElementById('slide-index').innerText = `${String(currentIndex + 1).padStart(2, '0')} / ${String(presentationData.length).padStart(2, '0')}`;
             document.getElementById('prevBtn').disabled = (currentIndex === 0);
             document.getElementById('nextBtn').disabled = (currentIndex === presentationData.length - 1);
-            clearInterval(timerInterval); timeLeft = data.time; resetCorruption(); timerInterval = setInterval(updateTimerUI, 1000); updateTimerUI();
-            setTimeout(() => { document.querySelectorAll('.image-box').forEach(box => box.classList.add('scanned')); }, 100);
+            
+            clearInterval(timerInterval);
+            timeLeft = data.time;
+            resetCorruption();
+            timerInterval = setInterval(updateTimerUI, 1000);
+            updateTimerUI();
+
+            setTimeout(() => {
+                document.querySelectorAll('.image-box').forEach(box => box.classList.add('scanned'));
+            }, 100);
         }
-        function changeSlide(dir) { currentIndex += dir; if (currentIndex < 0) currentIndex = 0; if (currentIndex >= presentationData.length) currentIndex = presentationData.length - 1; renderSlide(); }
-        document.addEventListener('keydown', (e) => { if (e.key === "ArrowRight" || e.key === " ") changeSlide(1); if (e.key === "ArrowLeft") changeSlide(-1); });
+
+        function changeSlide(dir) {
+            currentIndex += dir;
+            if (currentIndex < 0) currentIndex = 0;
+            if (currentIndex >= presentationData.length) currentIndex = presentationData.length - 1;
+            renderSlide();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowRight" || e.key === " ") changeSlide(1);
+            if (e.key === "ArrowLeft") changeSlide(-1);
+        });
+
         window.onload = renderSlide;
     </script>
 </body>
