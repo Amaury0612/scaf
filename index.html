@@ -39,12 +39,13 @@
             position: relative;
         }
 
+        /* HUD Overlay */
         .hud-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 10;
         }
         .hud-corner {
-            position: absolute; width: 20px; height: 20px;
+            position: absolute; width: 25px; height: 25px;
             border: 2px solid var(--primary); opacity: 0.2;
         }
         .tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
@@ -52,6 +53,7 @@
         .bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
         .br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
 
+        /* --- ZONE DE CONTENU --- */
         #slide-container {
             flex: 1;
             padding: 2vh 4vw;
@@ -107,6 +109,7 @@
             position: relative;
         }
 
+        /* Images */
         .image-box {
             width: 100%; 
             height: 100%;
@@ -124,6 +127,7 @@
             object-fit: cover; 
         }
 
+        /* Grilles */
         .multi-img-grid {
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
@@ -138,7 +142,6 @@
             overflow: hidden; 
             background: #000;
             height: 100%;
-            min-height: 0;
         }
         .grid-item img { width: 100%; height: 100%; object-fit: cover; }
         .grid-label { 
@@ -155,8 +158,10 @@
             width: 100%;
             height: 100%;
             flex: 1;
+            align-content: center;
         }
 
+        /* Slide 8: Satellite & Avion */
         .vertical-visual {
             display: flex;
             flex-direction: column;
@@ -173,6 +178,7 @@
         }
         .v-img img { width: 100%; height: 100%; object-fit: cover; }
 
+        /* Slide 7 (Entreprises) */
         .company-list {
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
@@ -196,6 +202,7 @@
         .company-name-card .c-name { font-family: 'Orbitron'; font-size: clamp(14px, 2.2vh, 18px); color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
         .company-name-card .c-country { font-family: 'JetBrains Mono'; font-size: 10px; color: #fff; margin-top: 4px; opacity: 0.8; }
 
+        /* Typographie */
         h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(22px, 4.5vh, 50px); margin: 0; color: var(--primary); }
         h2 { font-family: 'Orbitron', sans-serif; font-size: clamp(14px, 2vh, 18px); margin: 2px 0; opacity: 0.8; }
         h3 { font-family: 'Orbitron', sans-serif; font-size: clamp(18px, 3vh, 26px); margin: 0; color: #fff; }
@@ -212,6 +219,7 @@
         .card h4 { font-size: clamp(11px, 1.5vh, 13px); color: var(--primary); margin: 0 0 2px 0; font-family: 'Orbitron'; }
         .card p { font-size: clamp(10px, 1.3vh, 12px); color: var(--text-dim); margin: 0; line-height: 1.2; }
 
+        /* --- NAVIGATION --- */
         .nav-bar {
             height: var(--nav-height);
             padding: 0 40px;
@@ -250,7 +258,7 @@
         <div id="slide-container"></div>
 
         <div class="nav-bar">
-            <div class="progress-text" id="slide-index">01 / 09</div>
+            <div class="progress-text" id="slide-index">01 / 10</div>
             <div class="btn-group">
                 <button class="nav-btn" onclick="changeSlide(-1)" id="prevBtn">PREVIOUS</button>
                 <button class="nav-btn" onclick="changeSlide(1)" id="nextBtn">NEXT</button>
@@ -274,12 +282,12 @@
                 header: "// 01. SUMMARY",
                 title: "Presentation Outline",
                 grid: [
-                    { h: "01. History", p: "Gen 4 & 5 technology recap." },
-                    { h: "02. 6th Gen Update", p: "Key technological improvements." },
-                    { h: "03. Alliance", p: "European tri-national cooperation." },
-                    { h: "04. Actors", p: "Industry leaders and partners." },
-                    { h: "05. Update", p: "Next Generation Fighter specs." },
-                    { h: "06. Stakes", p: "Strategic friction and hurdles." }
+                    { h: "01. History", p: "Evolution of Gen 4 & 5." },
+                    { h: "02. New Gen", p: "6th Gen Improvements." },
+                    { h: "03. SCAF Project", p: "Timeline & Future Specs." },
+                    { h: "04. Alliance", p: "EU Strategic Sovereignty." },
+                    { h: "05. Actors", p: "Industry & Countries." },
+                    { h: "06. Stakes", p: "Friction & Challenges." }
                 ]
             },
             {
@@ -287,8 +295,8 @@
                 header: "// 02. PREVIOUS GENERATIONS",
                 title: "Evolution",
                 cards: [
-                    { h: "Gen 4 Detail", p: "Digital flight controls, multi-role versatility, and fly-by-wire agility." },
-                    { h: "Gen 5 Detail", p: "All-aspect stealth, internal weapon bays, and advanced sensor fusion." }
+                    { h: "Gen 4 Characterisitcs", p: "Maneuverability, digital flight controls, and multi-role versatility (Rafale/Typhoon)." },
+                    { h: "Gen 5 Characteristics", p: "All-aspect stealth, internal weapon bays, and advanced sensor fusion (F-35/Su-57)." }
                 ],
                 images: [
                     "https://upload.wikimedia.org/wikipedia/commons/6/64/Rafale_-_RIAT_2009_%283751416421%29.jpg",
@@ -312,7 +320,18 @@
             },
             {
                 type: "standard",
-                header: "// 04. THE ALLIANCE",
+                header: "// 04. PROGRAM OVERVIEW",
+                title: "The SCAF Project",
+                cards: [
+                    { h: "Launch (2017)", p: "Started by FR/DE, joined by ES in 2019." },
+                    { h: "Deadlines", p: "Flight demo 2029. Operational status by 2040." },
+                    { h: "Future Specs", p: "Stealth airframe, high-thrust, System of Systems." }
+                ],
+                image: "https://images.air-cosmos.com/media/f275769b21870026d48e7f1de4433a61cfff058604bc19353e415f8d2d0bc79b"
+            },
+            {
+                type: "standard",
+                header: "// 05. THE ALLIANCE",
                 title: "Strategic Link",
                 cards: [
                     { h: "France", p: "Strategic leadership and core design lead." },
@@ -323,7 +342,7 @@
             },
             {
                 type: "companies",
-                header: "// 05. INDUSTRIAL ACTORS",
+                header: "// 06. INDUSTRIAL ACTORS",
                 title: "Main Partners",
                 companies: [
                     { n: "Airbus", c: "France / Germany / Spain" },
@@ -336,23 +355,23 @@
             },
             {
                 type: "comm_vertical",
-                header: "// 06. 6TH GENERATION UPDATE",
+                header: "// 07. 6TH GENERATION UPDATE",
                 title: "6th Generation Update",
                 cards: [
-                    { h: "New Generation Fighter", p: "The core stealthy piloted platform." },
-                    { h: "Global Link", p: "Real-time satellite tactical communication." }
+                    { h: "New Generation Fighter", p: "Heart of the stealthy piloted platform." },
+                    { h: "Space Connectivity", p: "Real-time satellite link for hyper-connected combat." }
                 ],
                 imgTop: "https://eos.com/wp-content/uploads/2023/03/types-of-satellites.jpg",
                 imgBottom: "https://www.aerotime.aero/images/6th-generation-fighter-jets1-1-800x500.jpg"
             },
             {
                 type: "standard",
-                header: "// 07. STRATEGIC FRICTION",
+                header: "// 08. STRATEGIC FRICTION",
                 title: "Challenges & Stakes",
                 cards: [
-                    { h: "Country Stakes", p: "FR: Sovereignty & Export freedom. DE: Workshare & Tech access (IP). ES: Tier 1 industry integration." },
-                    { h: "Main Blocking Point", p: "Dassault vs Airbus leadership on the Flight Controls (the 'brain' of the NGF)." },
-                    { h: "Intellectual Property", p: "Disagreement on sharing industrial secrets and 'black box' technologies." }
+                    { h: "Country Interests", p: "FR: Sovereignty. DE: Tech access (IP). ES: Industrial tier 1 integration." },
+                    { h: "Blocking Point", p: "Dassault vs Airbus leadership on Flight Controls (NGF 'Brain')." },
+                    { h: "Industrial Secrets", p: "Protection of national technology vs common IP sharing." }
                 ],
                 image: "https://www.boursorama.com/static/i/content/images/6/0/1/601b367e67db7cafddb469fd469333cf-760x507.jpg"
             },
@@ -393,9 +412,9 @@
                         <h3>${data.title}</h3>
                         <div class="summary-grid">
                             ${data.grid.map(c => `
-                                <div class="card" style="display:flex; flex-direction:column; justify-content:center; padding:15px; margin:0;">
-                                    <h4 style="font-size: 15px; margin-bottom:5px;">${c.h}</h4>
-                                    <p style="font-size: 12px; margin:0;">${c.p}</p>
+                                <div class="card" style="display:flex; flex-direction:column; justify-content:center; padding:12px; margin:0;">
+                                    <h4 style="font-size: 13px; margin-bottom:4px;">${c.h}</h4>
+                                    <p style="font-size: 11px; margin:0;">${c.p}</p>
                                 </div>
                             `).join('')}
                         </div>
