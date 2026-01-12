@@ -38,7 +38,7 @@
         .corrupt-shake { animation: glitchShake 0.1s infinite; }
         @keyframes glitchShake {
             0% { transform: translate(1px, 1px); }
-            50% { transform: translate(-2px, -1px); }
+            50% { transform: translate(-1px, -1px); }
             100% { transform: translate(1px, -2px); }
         }
 
@@ -174,7 +174,7 @@
             { type: "companies", header: "// 06. ACTORS", title: "Industry Pillars", companies: [{ n: "Airbus", c: "FR / DE / ES" }, { n: "Dassault Aviation", c: "France" }, { n: "Safran", c: "France" }, { n: "Thales", c: "France" }, { n: "Indra", c: "Spain" }, { n: "MBDA", c: "FR / DE / ES" }], time: 90 },
             { type: "comm_vertical", header: "// 07. GLOBAL_LINK", title: "Connectivity", cards: [{ h: "NGF Platform", p: "Central stealth brain with AI." }, { h: "Space Link", p: "Real-time satellite tactical sync." }], imgTop: "https://eos.com/wp-content/uploads/2023/03/types-of-satellites.jpg", imgBottom: "https://www.aerotime.aero/images/6th-generation-fighter-jets1-1-800x500.jpg", time: 90 },
             { type: "standard", header: "// 08. FRICTION_ZONES", title: "Strategic Challenges", cards: [{ h: "Dassault vs Airbus", p: "Blocking Point: Conflict over leadership on next-gen flight controls." }, { h: "France vs Germany", p: "Blocking Point: Industrial secrets protection vs technology sharing." }, { h: "Sovereignty", p: "Blocking Point: German restrictions on export vs French strategic needs." }], image: "https://www.boursorama.com/static/i/content/images/6/0/1/601b367e67db7cafddb469fd469333cf-760x507.jpg", time: 90 },
-            { type: "final-spectacular", title: "QUESTIONS?", subtitle: "Mission Debriefing", badge: "[ FINAL DEBRIEF ]", imageL: "https://pictures.latribune.fr/cdn-cgi/image/format=auto,width=1200,height=675/517/1318517.jpg", imageR: "https://meta-defense.fr/wp-content/uploads/2024/10/Airbus-Wingman.jpg", time: 300 }
+            { type: "final-spectacular", title: "QUESTIONS?", subtitle: "Mission Debriefing", badge: "[ FINAL DEBRIEF ]", imageL: "https://pictures.latribune.fr/cdn-cgi/image/format=auto,width=1200,height=675/517/1318517.jpg", imageR: "https://meta-defense.fr/wp-content/uploads/2024/10/Airbus-Wingman.jpg", time: 180 }
         ];
 
         let currentIndex = 0, timeLeft = 90, timerInterval;
@@ -202,7 +202,7 @@
                         container.classList.add('corrupt-noise'); 
                         container.querySelectorAll('.image-box').forEach(box => box.classList.add('corrupt-broken', 'corrupt-drips')); 
                     }
-                    if (ovr >= 40) container.classList.add('corrupt-final'); // Horreur finit à 40s
+                    if (ovr >= 40) container.classList.add('corrupt-final'); // Fin de l'horreur à 40s
                 }
             }
         }
