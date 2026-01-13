@@ -3,436 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber-Odyssey Online | MMO Simulation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <title>Réponses Dossier Sujet - AD Débitmètre AS-355</title>
     <style>
         :root {
-            --ui-blue: #00f2ff;
-            --ui-pink: #ff00ff;
-            --ui-orange: #ffaa00;
-            --bg-dark: #020617;
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --text: #1e293b;
+            --bg: #f8fafc;
+            --border: #e2e8f0;
         }
-
-        body, html {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
-            overflow: hidden;
-            background-color: var(--bg-dark);
-            color: var(--ui-blue);
-            font-family: 'JetBrains Mono', monospace;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+            margin: 0;
+            padding: 40px 20px;
         }
-
-        #canvas-container {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 1;
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-
-        /* --- HUD --- */
-        #hud {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
-            box-sizing: border-box;
+        h1 {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 24px;
         }
-
-        .stat-panel {
-            background: rgba(0, 10, 20, 0.7);
-            border: 1px solid var(--ui-blue);
-            padding: 15px;
-            backdrop-filter: blur(5px);
+        h2 {
+            background: var(--primary);
+            color: white;
+            padding: 10px 15px;
             border-radius: 4px;
+            font-size: 18px;
+            margin-top: 40px;
         }
-
-        .quest-tracker {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 250px;
-            border-left: 3px solid var(--ui-orange);
+        .question-block {
+            margin-bottom: 25px;
+            border-left: 4px solid var(--secondary);
+            padding-left: 15px;
         }
-
-        .label { font-size: 10px; opacity: 0.7; text-transform: uppercase; margin-bottom: 5px; }
-        .value { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #fff; }
-        .progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.1); margin-top: 8px; position: relative; overflow: hidden;}
-        #hp-fill { height: 100%; width: 100%; background: var(--ui-blue); transition: width 0.3s; }
-        #quest-progress { color: var(--ui-orange); font-size: 12px; }
-
-        #dialogue-box {
-            position: absolute;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            background: rgba(0, 10, 20, 0.9);
-            border: 2px solid var(--ui-blue);
-            padding: 20px;
-            display: none;
-            text-align: center;
+        .question {
+            font-weight: bold;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 5px;
         }
-
-        .interaction-hint {
-            position: absolute;
-            bottom: 100px;
+        .answer {
+            display: block;
+            text-align: justify;
+        }
+        table {
             width: 100%;
-            text-align: center;
-            font-size: 14px;
-            color: #fff;
-            text-shadow: 0 0 10px var(--ui-blue);
-            display: none;
+            border-collapse: collapse;
+            margin: 20px 0;
         }
-
-        .scanline {
-            width: 100%; height: 100%;
-            position: absolute; top: 0; left: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px;
-            pointer-events: none; z-index: 20;
-            opacity: 0.3;
+        th, td {
+            border: 1px solid var(--border);
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            color: var(--primary);
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Fiche de Réponses : Intervention Débitmètre AS-355</h1>
 
-    <div class="scanline"></div>
-
-    <div id="hud">
-        <div class="stat-panel" style="width: 200px;">
-            <div class="label">Avatar: PLAYER_01</div>
-            <div class="progress-bar"><div id="hp-fill"></div></div>
-            <div style="margin-top: 5px; font-size: 10px;">HP: 100/100</div>
+        <h2>Partie 1 : Analyse et étude de documentation</h2>
+        
+        <div class="question-block">
+            <span class="question">1.1 Qu'est-ce qu'une AD ?</span>
+            <span class="answer">Une <strong>AD</strong> (Airworthiness Directive), ou Consigne de Navigabilité, est un document réglementaire impératif émis par une autorité de l'aviation pour corriger un défaut de sécurité sur un aéronef. Son application est obligatoire pour maintenir la navigabilité.</span>
         </div>
 
-        <div class="stat-panel quest-tracker">
-            <div class="label">Objectif Actuel</div>
-            <div class="value" id="quest-title">Parler au Commandant</div>
-            <div id="quest-progress">En attente d'ordres...</div>
+        <div class="question-block">
+            <span class="question">1.2 Émetteur de cette AD :</span>
+            <span class="answer">L'<strong>EASA</strong> (European Aviation Safety Agency).</span>
         </div>
 
-        <div id="dialogue-box">
-            <div class="label" id="dialogue-name">NOM</div>
-            <div id="dialogue-text">Texte du dialogue...</div>
-            <div style="margin-top: 10px; font-size: 10px; color: var(--ui-orange);">[ESPACE] POUR CONTINUER</div>
+        <div class="question-block">
+            <span class="question">1.3 Différence entre AD et SB :</span>
+            <span class="answer">L'AD est un document <strong>réglementaire obligatoire</strong> émis par l'autorité. Le SB (Service Bulletin) est un document <strong>technique</strong> émis par le constructeur qui n'est facultatif que s'il n'est pas repris par une AD.</span>
         </div>
 
-        <div class="interaction-hint" id="hint">APPUIE SUR [ESPACE] POUR PARLER</div>
+        <div class="question-block">
+            <span class="question">1.4 Cause de l'émission :</span>
+            <span class="answer">Une extinction moteur incontrôlée (flame-out) due à l'obstruction du débitmètre par des particules lors du ravitaillement, car la section interne du débitmètre est plus petite que la maille de la crépine amont.</span>
+        </div>
 
-        <div style="display: flex; justify-content: center; align-items: flex-end; height: 100%;">
-            <div class="stat-panel" style="text-align: center; border-bottom: 2px solid var(--ui-pink);">
-                <div class="label">Contrôles</div>
-                <div style="font-size: 11px;">ZQSD: Bouger | ENTREE: Attaquer | ESPACE: Interagir</div>
-            </div>
+        <div class="question-block">
+            <span class="question">1.5 Raisons des suppressions successives :</span>
+            <span class="answer">L'AD 2013-0205 imposait le retrait. L'AD 2015-0202 a introduit l'alternative de réinstallation avec pompe modifiée. L'AD 2016-0109R1 a ajouté les hélicoptères modifiés par le SB 28.02 (oubliés précédemment) et corrigé des erreurs de références.</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">1.6 Référence du document originel :</span>
+            <span class="answer">Eurocopter Alert Service Bulletin (ASB) <strong>AS355-28.00.20</strong>.</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">1.7 Délais accordés :</span>
+            <span class="answer">Sous <strong>5 mois ou 750 heures de vol</strong> (au premier terme échu).</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">1.8 Conséquence de la non-exécution :</span>
+            <span class="answer">L'interdiction de vol (clouage au sol) de l'aéronef.</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">1.9 Les militaires sont-ils concernés ?</span>
+            <span class="answer">Non, cette AD concerne les modèles civils certifiés EASA. Les militaires dépendent de leurs propres autorités nationales de navigabilité.</span>
+        </div>
+
+        <h2>Partie 2 : Réglementation</h2>
+
+        <div class="question-block">
+            <span class="question">2.1 Agréments de l'entreprise :</span>
+            <span class="answer">Agrément de maintenance <strong>Part-145</strong> et agrément de gestion de navigabilité <strong>CAMO</strong> (Part-M).</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">2.2 Programmation du travail :</span>
+            <span class="answer">Lors de la prochaine visite périodique ou d'un chantier dédié avant l'échéance réglementaire.</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">2.3 Document rendant l'exécution impérative :</span>
+            <span class="answer">L'<strong>Airworthiness Directive (AD)</strong>.</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">2.4 Agréments atelier militaire :</span>
+            <span class="answer">Agrément <strong>FRA-145</strong>.</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">2.5 Qualification pour le contrôle final :</span>
+            <span class="answer">Technicien titulaire d'une <strong>licence B1.3</strong> ou <strong>B2</strong>.</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">2.6 Licence requise pour l'APRS de sortie de visite :</span>
+            <span class="answer">Licence <strong>C</strong>.</span>
+        </div>
+
+        <h2>Partie 3 : Étude technique</h2>
+
+        <div class="question-block">
+            <span class="question">3.1 Pourquoi pas un filtre plus fin à l'aspiration ?</span>
+            <span class="answer">Cela risquerait d'entraîner une perte de charge trop élevée ou une cavitation de la pompe, compromettant l'alimentation du moteur.</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">3.2 Huile dans le filtre carburant (Précision) :</span>
+            <span class="answer">Il s'agit d'huile moteur chaude circulant dans un échangeur thermique pour assurer le <strong>réchauffage du carburant</strong> et éviter le givrage.</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">3.3 Fonctions du débitmètre :</span>
+            <span class="answer">Mesure de la consommation instantanée, calcul de la quantité restante et détermination de l'autonomie en temps.</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">3.4 Engendrement pour le pilote en cas de retrait :</span>
+            <span class="answer">Perte de l'affichage de précision de l'autonomie ; le pilote doit effectuer ses calculs manuellement via les jauges classiques.</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">3.5 Pourquoi réinstaller en 2e procédure ?</span>
+            <span class="answer">Car l'installation de la nouvelle pompe à crépine fine (P/N P94C16-620) élimine le risque d'obstruction du débitmètre, sécurisant ainsi son usage.</span>
+        </div>
+
+        <h2>Partie 4 : Étude économique</h2>
+
+        <div class="question-block">
+            <span class="question">4.1 Flotte impactée (AS-355 uniquement) :</span>
+            <table>
+                <tr>
+                    <th>Immatriculation</th>
+                    <th>Prochaine Visite</th>
+                </tr>
+                <tr><td>F-GXYZA</td><td>100 h / 500 h</td></tr>
+                <tr><td>F-GXYZC</td><td>100 h</td></tr>
+                <tr><td>F-GXYZE</td><td>100 h</td></tr>
+                <tr><td>F-GXYZF</td><td>100 h</td></tr>
+                <tr><td>F-GXYZG</td><td>100 h</td></tr>
+                <tr><td>F-GXYZJ</td><td>100 h</td></tr>
+                <tr><td>F-GXYZK</td><td>100 h</td></tr>
+                <tr><td>F-GXYZL</td><td>100 h</td></tr>
+            </table>
+        </div>
+
+        <div class="question-block">
+            <span class="question">4.2 Temps d'intervention Procédure 1 (Retrait) :</span>
+            <span class="answer">Environ <strong>0,16 h</strong> de main-d'œuvre active par appareil (dépose et neutralisation électrique).</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">4.3 Temps d'intervention Procédure 2 (Installation complète) :</span>
+            <span class="answer">Environ <strong>1,4 h</strong> de main-d'œuvre par appareil (remplacement pompes x2 et réinstallation débitmètres).</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">4.4 Temps maximal d'immobilisation :</span>
+            <span class="answer">Environ <strong>4 à 5 heures</strong> incluant les préparations, les essais d'étanchéité et la remise en service (APRS).</span>
+        </div>
+
+        <div class="question-block">
+            <span class="question">4.5 Planning de rotation :</span>
+            <span class="answer">Avec 12 hélicoptères au total et 8 requis en ligne, nous pouvons traiter <strong>4 appareils simultanément</strong> par roulement (2 groupes de 4 AS-355) pour finaliser l'AD en moins d'une semaine sans impacter l'exploitation.</span>
+        </div>
+
+        <div class="footer">
+            Examen BTS Aéronautique - Dossier Sujet : Maintenance Aéronefs - 2026
         </div>
     </div>
-
-    <div id="canvas-container"></div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-    <script>
-        /**
-         * CYBER-ODYSSEY ONLINE ENGINE - VERSION STABLE
-         */
-
-        let scene, camera, renderer, clock;
-        let player, npc, worldFloor;
-        let monsters = [], particles = [];
-        let otherPlayers = [];
-        
-        // États du jeu
-        const keys = {};
-        let questState = 0; // 0: Pas de quête, 1: Active, 2: Terminée
-        let killedCount = 0;
-        const TARGET_KILL = 5;
-        let isDialogOpen = false;
-
-        // Configuration Physique
-        let playerVel = new THREE.Vector3();
-        const MOVE_SPEED = 0.15;
-
-        function init() {
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x020408);
-            scene.fog = new THREE.FogExp2(0x020408, 0.02);
-
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-            clock = new THREE.Clock();
-
-            // Lumières
-            const ambient = new THREE.AmbientLight(0x404040, 0.5);
-            scene.add(ambient);
-            const directional = new THREE.DirectionalLight(0x00f2ff, 1);
-            directional.position.set(10, 20, 10);
-            scene.add(directional);
-
-            setupWorld();
-            setupEntities();
-
-            window.addEventListener('keydown', handleKeyDown);
-            window.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
-            window.addEventListener('resize', onWindowResize);
-
-            animate();
-        }
-
-        function setupWorld() {
-            // Sol Technologique
-            const grid = new THREE.GridHelper(200, 50, 0x00f2ff, 0x051020);
-            scene.add(grid);
-
-            const floorGeo = new THREE.PlaneGeometry(200, 200);
-            const floorMat = new THREE.MeshPhongMaterial({ color: 0x050505, shininess: 10 });
-            worldFloor = new THREE.Mesh(floorGeo, floorMat);
-            worldFloor.rotation.x = -Math.PI / 2;
-            scene.add(worldFloor);
-        }
-
-        function setupEntities() {
-            // Le Joueur
-            const playerGeo = new THREE.BoxGeometry(1, 2, 1);
-            const playerMat = new THREE.MeshPhongMaterial({ color: 0x00f2ff });
-            player = new THREE.Mesh(playerGeo, playerMat);
-            player.position.y = 1;
-            scene.add(player);
-
-            // Le PNJ de Quête
-            const npcGeo = new THREE.CylinderGeometry(0.5, 0.5, 2, 8);
-            const npcMat = new THREE.MeshPhongMaterial({ color: 0xffaa00 });
-            npc = new THREE.Mesh(npcGeo, npcMat);
-            npc.position.set(0, 1, -10);
-            scene.add(npc);
-
-            // Icône de quête flottante
-            const iconGeo = new THREE.OctahedronGeometry(0.3);
-            const iconMat = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
-            npc.questIcon = new THREE.Mesh(iconGeo, iconMat);
-            npc.questIcon.position.y = 2;
-            npc.add(npc.questIcon);
-
-            // Simulation MMO: Autres joueurs (IA)
-            for(let i=0; i<10; i++) {
-                const other = new THREE.Mesh(playerGeo, new THREE.MeshPhongMaterial({ color: 0x555555 }));
-                other.position.set((Math.random()-0.5)*100, 1, (Math.random()-0.5)*100);
-                scene.add(other);
-                otherPlayers.push({ mesh: other, target: new THREE.Vector3() });
-            }
-        }
-
-        function handleKeyDown(e) {
-            keys[e.key.toLowerCase()] = true;
-
-            // Attaque avec la touche Entrée
-            if (e.key === 'Enter') {
-                performAttack();
-            }
-
-            // Interaction avec Espace
-            if (e.code === 'Space') {
-                if (isDialogOpen) {
-                    closeDialogue();
-                } else {
-                    checkInteraction();
-                }
-            }
-        }
-
-        function checkInteraction() {
-            const dist = player.position.distanceTo(npc.position);
-            if (dist < 4) {
-                openDialogue("COMMANDANT KAEL", getDialogueText());
-            }
-        }
-
-        function getDialogueText() {
-            if (questState === 0) return "Soldat ! Les drones de surveillance ont été corrompus. Détruisez 5 drones pour nettoyer la zone !";
-            if (questState === 1 && killedCount < TARGET_KILL) return "Il reste des drones actifs. Continuez le combat !";
-            if (questState === 1 && killedCount >= TARGET_KILL) {
-                questState = 2;
-                return "Excellent travail. La zone est sécurisée. Vous êtes une légende !";
-            }
-            return "Repos, soldat. La mission est accomplie.";
-        }
-
-        function openDialogue(name, text) {
-            isDialogOpen = true;
-            document.getElementById('dialogue-name').innerText = name;
-            document.getElementById('dialogue-text').innerText = text;
-            document.getElementById('dialogue-box').style.display = 'block';
-            
-            if (questState === 0) {
-                questState = 1;
-                updateQuestUI();
-                spawnMonsters();
-            }
-        }
-
-        function closeDialogue() {
-            isDialogOpen = false;
-            document.getElementById('dialogue-box').style.display = 'none';
-            updateQuestUI();
-        }
-
-        function updateQuestUI() {
-            const title = document.getElementById('quest-title');
-            const prog = document.getElementById('quest-progress');
-
-            if (questState === 0) {
-                title.innerText = "Parler au Commandant";
-                prog.innerText = "Trouvez Kael au centre.";
-            } else if (questState === 1) {
-                title.innerText = "Nettoyage de Zone";
-                prog.innerText = `Drones neutralisés : ${killedCount} / ${TARGET_KILL}`;
-            } else {
-                title.innerText = "Mission Accomplie";
-                prog.innerText = "Zone sécurisée.";
-            }
-        }
-
-        function spawnMonsters() {
-            if (monsters.length > 0) return;
-            for(let i=0; i<8; i++) {
-                const monsterGeo = new THREE.IcosahedronGeometry(0.8);
-                const monsterMat = new THREE.MeshPhongMaterial({ color: 0xff00ff, wireframe: true });
-                const m = new THREE.Mesh(monsterGeo, monsterMat);
-                m.position.set((Math.random()-0.5)*40, 1.5, (Math.random()-0.5)*40 - 10);
-                m.hp = 1;
-                scene.add(m);
-                monsters.push(m);
-            }
-        }
-
-        function performAttack() {
-            // Effet visuel d'attaque (impulsion)
-            const pulseGeo = new THREE.SphereGeometry(4, 16, 16);
-            const pulseMat = new THREE.MeshBasicMaterial({ color: 0x00f2ff, transparent: true, opacity: 0.5 });
-            const pulse = new THREE.Mesh(pulseGeo, pulseMat);
-            pulse.position.copy(player.position);
-            scene.add(pulse);
-            particles.push({ mesh: pulse, life: 1.0 });
-
-            // Détection de dégâts sécurisée (parcours inverse pour éviter les plantages lors du splice)
-            for (let i = monsters.length - 1; i >= 0; i--) {
-                const m = monsters[i];
-                if (m.position.distanceTo(player.position) < 4) {
-                    m.hp -= 1;
-                    if (m.hp <= 0) {
-                        createExplosion(m.position);
-                        scene.remove(m);
-                        monsters.splice(i, 1);
-                        if (questState === 1) {
-                            killedCount++;
-                            updateQuestUI();
-                        }
-                    }
-                }
-            }
-        }
-
-        function createExplosion(pos) {
-            const expGeo = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-            const expMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });
-            for(let i=0; i<10; i++) {
-                const pPart = new THREE.Mesh(expGeo, expMat);
-                pPart.position.copy(pos);
-                pPart.userData.vel = new THREE.Vector3((Math.random()-0.5)*0.2, Math.random()*0.2, (Math.random()-0.5)*0.2);
-                scene.add(pPart);
-                particles.push({ mesh: pPart, life: 1.0, isExp: true });
-            }
-        }
-
-        function updatePlayer() {
-            if (isDialogOpen) return;
-
-            const move = new THREE.Vector3();
-            if (keys['z']) move.z -= 1;
-            if (keys['s']) move.z += 1;
-            if (keys['q']) move.x -= 1;
-            if (keys['d']) move.x += 1;
-
-            if (move.length() > 0) {
-                move.normalize().multiplyScalar(MOVE_SPEED);
-                player.position.add(move);
-                const targetAngle = Math.atan2(move.x, move.z);
-                player.rotation.y = targetAngle;
-            }
-
-            // La caméra suit le joueur
-            camera.position.lerp(new THREE.Vector3(player.position.x, player.position.y + 10, player.position.z + 15), 0.1);
-            camera.lookAt(player.position);
-
-            // Aide visuelle pour l'interaction
-            if (player.position.distanceTo(npc.position) < 4) {
-                document.getElementById('hint').style.display = 'block';
-            } else {
-                document.getElementById('hint').style.display = 'none';
-            }
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            const time = clock.getElapsedTime();
-
-            updatePlayer();
-
-            // Animation PNJ & Icône
-            npc.questIcon.rotation.y += 0.05;
-            npc.questIcon.position.y = 2 + Math.sin(time * 2) * 0.2;
-
-            // Animation Monstres
-            monsters.forEach(m => {
-                m.rotation.x += 0.02;
-                m.rotation.y += 0.02;
-                m.position.y = 1.5 + Math.sin(time * 3 + m.position.x) * 0.3;
-            });
-
-            // Simulation MMO: Mouvement des IA
-            otherPlayers.forEach(pIA => {
-                if (Math.random() > 0.98) {
-                    pIA.target.set((Math.random()-0.5)*100, 1, (Math.random()-0.5)*100);
-                }
-                pIA.mesh.position.lerp(pIA.target, 0.01);
-            });
-
-            // Gestion particules & effets sécurisée (parcours inverse)
-            for (let i = particles.length - 1; i >= 0; i--) {
-                const p = particles[i];
-                p.life -= 0.02;
-                if (p.isExp) {
-                    p.mesh.position.add(p.userData.vel);
-                } else {
-                    p.mesh.scale.multiplyScalar(1.05);
-                    p.mesh.material.opacity = p.life;
-                }
-
-                if (p.life <= 0) {
-                    scene.remove(p.mesh);
-                    particles.splice(i, 1);
-                }
-            }
-
-            renderer.render(scene, camera);
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        window.onload = init;
-    </script>
 </body>
 </html>
