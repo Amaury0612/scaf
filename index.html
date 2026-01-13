@@ -1,328 +1,305 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCAF: Tactical Mission Interface</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@200;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Pong Neo-Classic | GitHub Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00f2ff;
-            --primary-dim: rgba(0, 242, 255, 0.15);
-            --warning: #f43f5e;
+            --neon-blue: #00f2ff;
+            --neon-pink: #f43f5e;
             --bg-dark: #020617;
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-            --nav-height: 80px;
         }
 
         * { box-sizing: border-box; }
-        
+
         body {
-            background-color: #000;
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
             margin: 0;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden; 
+            padding: 0;
+            background-color: #000;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
             display: flex;
             flex-direction: column;
-            transition: background-color 0.5s ease;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        /* --- PROTOCOLE D'HORREUR NUMÉRIQUE --- */
-        .corrupt-shake { animation: glitchShake 0.1s infinite; }
-        @keyframes glitchShake {
-            0% { transform: translate(1px, 1px); }
-            50% { transform: translate(-1px, -1px); }
-            100% { transform: translate(1px, -2px); }
+        #game-container {
+            position: relative;
+            border: 4px solid var(--neon-blue);
+            box-shadow: 0 0 20px var(--primary-dim), inset 0 0 20px rgba(0, 242, 255, 0.2);
+            background: var(--bg-dark);
+            border-radius: 8px;
         }
 
-        .corrupt-jump span { display: inline-block; animation: letterJump 0.2s infinite alternate; }
-        @keyframes letterJump {
-            from { transform: translateY(0); }
-            to { transform: translateY(-10px); filter: blur(2px); }
+        canvas {
+            display: block;
+            image-rendering: pixelated;
         }
 
-        .corrupt-saturate img { filter: saturate(25) contrast(4) brightness(1.2) !important; }
-        .corrupt-red-blur img { filter: saturate(5) blur(20px) sepia(1) hue-rotate(-50deg) !important; transition: 1s; }
-        .corrupt-red-alert { --primary: #f43f5e !important; --primary-dim: rgba(244, 63, 94, 0.5) !important; }
-
-        .corrupt-broken { animation: shatterEffect 0.5s infinite alternate; }
-        @keyframes shatterEffect {
-            0% { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
-            100% { clip-path: polygon(5% 5%, 95% 2%, 100% 90%, 2% 98%); transform: scale(1.02) rotate(0.5deg); }
+        .ui-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            width: 100%;
         }
 
-        .corrupt-drips::after {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 250%;
-            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.95) 5%, black 100%);
-            background-size: 12% 100%; animation: drippingBlood 8s forwards;
-            z-index: 100; pointer-events: none;
+        .score-board {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            font-size: 48px;
+            opacity: 0.8;
+            pointer-events: none;
         }
-        @keyframes drippingBlood { from { transform: translateY(-100%); } to { transform: translateY(0%); } }
 
-        .corrupt-noise::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/b/b1/White_noise.png');
-            opacity: 0.3; z-index: 1000; pointer-events: none; animation: flickerNoise 0.04s infinite;
+        .instructions {
+            position: absolute;
+            bottom: -60px;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--neon-blue);
+            text-transform: uppercase;
         }
-        @keyframes flickerNoise { 0% { opacity: 0.2; } 100% { opacity: 0.4; } }
 
-        .corrupt-final { filter: invert(1) contrast(15) !important; opacity: 0 !important; transition: 4s ease-in; }
+        .msg-box {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            border: 2px solid var(--neon-pink);
+            border-radius: 10px;
+            display: none;
+        }
 
-        /* --- STRUCTURE --- */
-        .presentation-wrapper { display: flex; flex-direction: column; height: 100vh; width: 100vw; background: var(--bg-dark); position: relative; }
-        #slide-container { flex: 1; padding: 20px 60px; display: flex; flex-direction: column; background: radial-gradient(circle at center, #0f172a 0%, #000 100%); position: relative; overflow: hidden; min-height: 0; }
-        .slide-content { display: flex; flex-direction: column; height: 100%; width: 100%; justify-content: center; min-height: 0; }
+        .active { display: block; }
 
-        /* HEADER BAND - COMPACT LABELS / VISIBLE TIMER */
-        .header-line { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-dim); padding-bottom: 10px; margin-bottom: 12px; flex-shrink: 0; }
-        .tactical-timer { font-family: 'JetBrains Mono'; font-size: 18px; color: var(--primary); background: rgba(0,0,0,0.7); padding: 6px 15px; border: 1px solid var(--primary-dim); border-radius: 4px; box-shadow: 0 0 10px var(--primary-dim); }
-        .header-line .mono { font-size: 13px; opacity: 0.8; letter-spacing: 2px; }
-
-        /* HUD CORNERS */
-        .hud-corner { position: absolute; width: 25px; height: 25px; border: 2px solid var(--primary); opacity: 0.3; pointer-events: none; }
-        .tl { top: 15px; left: 15px; border-right: none; border-bottom: none; }
-        .tr { top: 15px; right: 15px; border-left: none; border-bottom: none; }
-        .bl { bottom: 15px; left: 15px; border-right: none; border-top: none; }
-        .br { bottom: 15px; right: 15px; border-left: none; border-top: none; }
-
-        /* ANIMATIONS */
-        .anim-text-in { animation: flyIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        @keyframes flyIn { 0% { opacity: 0; transform: translateX(-60px); filter: blur(15px); } 100% { opacity: 1; transform: translateX(0); filter: blur(0); } }
-
-        .image-box { position: relative; overflow: hidden; background: #000; border: 1px solid var(--primary-dim); border-radius: 4px; height: 100%; width: 100%; }
-        .image-box img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s, filter 0.5s; animation: kenBurns 40s infinite alternate; }
-        .image-box.scanned img { opacity: 1; transition-delay: 0.6s; }
-        .laser-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--primary); box-shadow: 0 0 20px var(--primary); z-index: 10; opacity: 0; }
-        .scanned .laser-line { animation: laserMove 0.8s ease-in-out forwards; }
-        @keyframes laserMove { 0% { top: 0; opacity: 1; } 100% { top: 100%; opacity: 0; } }
-        @keyframes kenBurns { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
-
-        /* TYPOGRAPHY PC */
-        h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(30px, 7vh, 70px); margin: 0; color: var(--primary); letter-spacing: -2px; }
-        h3 { font-family: 'Orbitron', sans-serif; font-size: clamp(24px, 4.2vh, 38px); margin: 0 0 10px 0; color: #fff; line-height: 1.1; }
-        .mono { font-family: 'JetBrains Mono', monospace; color: var(--primary); letter-spacing: 2px; }
-        .card { background: rgba(255,255,255,0.03); padding: 15px 20px; border-left: 5px solid var(--primary); margin-top: 10px; backdrop-filter: blur(10px); flex-shrink: 1; }
-        .card h4 { font-size: clamp(15px, 2vh, 18px); color: var(--primary); margin: 0 0 4px 0; font-family: 'Orbitron'; }
-        .card p { font-size: clamp(13px, 1.7vh, 16px); color: var(--text-dim); margin: 0; line-height: 1.4; }
-
-        /* LAYOUTS */
-        .body-layout { display: flex; gap: 40px; flex: 1; min-height: 0; align-items: stretch; overflow: hidden; }
-        .text-part { flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; overflow: hidden; }
-        .visual-part { flex: 1.3; height: 100%; position: relative; min-height: 0; }
-
-        .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 15px; flex: 1; min-height: 0; }
-        .generation-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; width: 100%; height: 100%; }
-        .gen-item { display: flex; flex-direction: column; gap: 4px; height: 100%; min-height: 0; }
-        .gen-label { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--primary); text-align: center; background: rgba(0,0,0,0.7); padding: 6px; border: 1px solid var(--primary-dim); text-transform: uppercase; }
-
-        .company-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 12px; flex: 1; min-height: 0; }
-        .company-card { background: var(--primary-dim); border: 1px solid var(--primary); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 4px; padding: 12px; }
-
-        /* FINAL SPECTACULAR TIMER - ALIGNED WITH TITLE SIZE */
-        .big-question-timer { font-size: 60px !important; margin-top: 15px; text-align: center; border: 2px solid var(--primary); padding: 10px 40px; background: rgba(0,0,0,0.8); z-index: 10; box-shadow: 0 0 30px var(--primary-dim); width: auto !important; }
-
-        /* NAVIGATION */
-        .nav-bar { height: var(--nav-height); padding: 0 40px; display: flex; justify-content: space-between; align-items: center; background: #000; border-top: 1px solid rgba(255,255,255,0.1); z-index: 2000; flex-shrink: 0; }
-        .nav-btn { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 8px 30px; cursor: pointer; font-family: 'Orbitron'; font-size: 11px; border-radius: 4px; transition: 0.3s; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
-        .nav-btn:hover:not(:disabled) { background: var(--primary); color: #000; box-shadow: 0 0 10px var(--primary-dim); }
-        .nav-btn:disabled { opacity: 0.1; }
-        .progress-text { font-family: 'JetBrains Mono'; font-size: 14px; color: var(--text-dim); }
-        .centered-slide { align-items: center; justify-content: center; text-align: center; flex: 1; display: flex; flex-direction: column; }
+        h1 { font-size: 24px; margin-bottom: 10px; color: var(--neon-pink); }
+        p { font-size: 14px; margin: 5px 0; }
+        .blink { animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
-<body id="main-body">
+<body>
 
-    <div class="presentation-wrapper" id="master-wrapper">
-        <div class="hud-corner tl"></div><div class="hud-corner tr"></div>
-        <div class="hud-corner bl"></div><div class="hud-corner br"></div>
-        <div id="slide-container"></div>
-        <div class="nav-bar">
-            <div class="progress-text" id="slide-index">01 / 10</div>
-            <div class="btn-group" style="display: flex; gap: 20px;">
-                <button class="nav-btn" onclick="changeSlide(-1)" id="prevBtn"><i class="fas fa-arrow-left"></i> PREVIOUS</button>
-                <button class="nav-btn" onclick="changeSlide(1)" id="nextBtn">NEXT <i class="fas fa-arrow-right"></i></button>
+    <div id="game-container">
+        <div class="score-board">
+            <div id="scoreL">0</div>
+            <div id="scoreR">0</div>
+        </div>
+
+        <canvas id="pongCanvas"></canvas>
+
+        <div class="ui-overlay" id="startScreen">
+            <div class="msg-box active">
+                <h1>PONG NEO-CLASSIC</h1>
+                <p>JOUEUR 1: [A] HAUT | [Q] BAS</p>
+                <p>JOUEUR 2: [P] HAUT | [M] BAS</p>
+                <p class="blink" style="margin-top: 20px; color: var(--neon-blue);">APPUYEZ SUR [ESPACE] POUR LANCER</p>
             </div>
-            <div class="mono" style="font-family: 'JetBrains Mono'; font-size: 10px; opacity: 0.5;">SCAF HUD INTERFACE</div>
+        </div>
+
+        <div class="instructions">
+            <div>G: A / Q</div>
+            <div>D: P / M</div>
         </div>
     </div>
 
     <script>
-        const presentationData = [
-            { type: "cover", title: "Future Support", subtitle: "6th Generation Fighter Development", badge: "[ MISSION START ]", image: "https://www.leparisien.fr/resizer/SOlIBNQaL28LGtFkoXoGDp6HENY=/arc-anglerfish-eu-central-1-prod-leparisien/public/RTQX25NP4JEO5EGMO34MPKTAXA.jpg", time: 90 },
-            { type: "summary", header: "// 01. MISSION_SUMMARY", title: "Presentation Outline", grid: [{ h: "01. History", p: "Recap Gen 4 & 5." }, { h: "02. New Gen", p: "Future pillars." }, { h: "03. SCAF Project", p: "Roadmap & Deadlines." }, { h: "04. Alliance", p: "EU Strategic Power." }, { h: "05. Actors", p: "Industrial Share." }, { h: "06. Stakes", p: "Strategic Friction." }], time: 90 },
-            { 
-                type: "multi-gen", 
-                header: "// 02. GEN_EVOLUTION", 
-                title: "Evolution", 
-                cards: [{ h: "Gen 4 Detail", p: "Digital flight controls and polyvalence." }, { h: "Gen 5 Detail", p: "Full passive stealth and sensor fusion." }], 
-                images: [
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Rafale_-_RIAT_2009_%283751416421%29.jpg/1280px-Rafale_-_RIAT_2009_%283751416421%29.jpg", 
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/RAF_Eurofighter_EF-2000_Typhoon_F2_Lofting-1.jpg/1280px-RAF_Eurofighter_EF-2000_Typhoon_F2_Lofting-1.jpg", 
-                    "https://media.istockphoto.com/id/474030760/fr/photo/f35-avion-de-chass%C3%A0-une-vitesse-supersonique.jpg?s=612x612&w=0&k=20&c=JPGkPkl0fYQnmnWq3gI1VmuCMei68YaIhGYWqHA7ojs=", 
-                    "https://www.twz.com/wp-content/uploads/2025/11/su-57-updates-dubai-airshow.jpg?w=1200"
-                ], 
-                imageLabels: ["RAFALE", "TYPHOON", "F-35", "SU-57"], 
-                time: 90 
-            },
-            { type: "standard", header: "// 03. 6TH_GEN_TECH", title: "Next Generation", cards: [{ h: "AI Systems", p: "Real-time pilot decision assistance." }, { h: "Remote swarms", p: "Loyal wingmen for saturation." }, { h: "Stealth 2.0", p: "Broadband active invisibility." }, { h: "Tactical Cloud", p: "Hyper-connected combat mesh." }], image: "https://miro.medium.com/v2/resize:fit:1400/1*VnDOy_Rupp-Qy39UAXLP8w.jpeg", time: 90 },
-            { type: "standard", header: "// 04. PROGRAM_DATA", title: "The SCAF Project", cards: [{ h: "Launch", p: "Initiated in 2017 (FR/DE), Spain 2019." }, { h: "Deadlines", p: "Demo flight in 2029. Service 2040." }, { h: "Target", p: "Connected system of systems." }], image: "https://images.air-cosmos.com/media/f275769b21870026d48e7f1de4433a61cfff058604bc19353e415f8d2d0bc79b", time: 90 },
-            { type: "standard", header: "// 05. STRATEGIC_LINK", title: "European Alliance", cards: [{ h: "France", p: "Leadership and airframe design (Dassault)." }, { h: "Germany", p: "Engines and systems (Airbus/MTU)." }, { h: "Spain", p: "Sensors and tactical cloud (Indra)/stuf." }], image: "https://i-wdm.unimedias.fr/2025/07/08/shutterstock_1847866900-scaled-686d32c56a0c8.jpg?auto=format%2Ccompress&crop=faces&cs=tinysrgb&fit=crop&h=501&ixlib=php-4.1.0&w=890", time: 90 },
-            { type: "companies", header: "// 06. ACTORS", title: "Industry Pillars", companies: [{ n: "Airbus", c: "FR / DE / ES" }, { n: "Dassault Aviation", c: "France" }, { n: "Safran", c: "France" }, { n: "Thales", c: "France" }, { n: "Indra", c: "Spain" }, { n: "MBDA", c: "FR / DE / ES" }], time: 90 },
-            { type: "comm_vertical", header: "// 07. GLOBAL_LINK", title: "Connectivity", cards: [{ h: "NGF Platform", p: "Central stealth brain with AI." }, { h: "Space Link", p: "Real-time satellite tactical sync." }], imgTop: "https://eos.com/wp-content/uploads/2023/03/types-of-satellites.jpg", imgBottom: "https://www.aerotime.aero/images/6th-generation-fighter-jets1-1-800x500.jpg", time: 90 },
-            { type: "standard", header: "// 08. FRICTION_ZONES", title: "Strategic Challenges", cards: [{ h: "Dassault vs Airbus", p: "Blocking Point: Conflict over leadership on next-gen flight controls." }, { h: "France vs Germany", p: "Blocking Point: Industrial secrets protection vs technology sharing." }, { h: "Sovereignty", p: "Blocking Point: German restrictions on export vs French strategic needs." }], image: "https://www.boursorama.com/static/i/content/images/6/0/1/601b367e67db7cafddb469fd469333cf-760x507.jpg", time: 90 },
-            { type: "final-spectacular", title: "QUESTIONS?", subtitle: "Mission Debriefing", badge: "[ FINAL DEBRIEF ]", imageL: "https://pictures.latribune.fr/cdn-cgi/image/format=auto,width=1200,height=675/517/1318517.jpg", imageR: "https://meta-defense.fr/wp-content/uploads/2024/10/Airbus-Wingman.jpg", time: 120 }
-        ];
+        /**
+         * CONFIGURATION ET VARIABLES GLOBALES
+         */
+        const canvas = document.getElementById('pongCanvas');
+        const ctx = canvas.getContext('2d');
+        const startScreen = document.getElementById('startScreen');
+        
+        // Tailles fixes pour GitHub Preview mais adaptables
+        canvas.width = 800;
+        canvas.height = 500;
 
-        let currentIndex = 0, timeLeft = 90, timerInterval;
-        const SCARY_SYMBOLS = "☠☣ℵ∅ψΩΣΔΓΘΛΞΠ%$#!?@ΔΦΨ";
+        const PADDLE_WIDTH = 10;
+        const PADDLE_HEIGHT = 80;
+        const BALL_SIZE = 8;
+        const WINNING_SCORE = 5;
 
-        function wrapText(node) { node.innerHTML = node.innerText.split('').map(char => char === ' ' ? char : `<span>${char}</span>`).join(''); }
+        let gameState = 'START'; // START, PLAY, GAMEOVER
+        let scoreL = 0;
+        let scoreR = 0;
 
-        function processCorruptionProgressive(ovr) {
-            const container = document.getElementById('slide-container');
-            const spans = container.querySelectorAll('span');
-            const images = container.querySelectorAll('.image-box img');
-            const wrapper = document.getElementById('master-wrapper');
+        // Objets du jeu
+        const playerL = { x: 20, y: canvas.height/2 - PADDLE_HEIGHT/2, dy: 0 };
+        const playerR = { x: canvas.width - 20 - PADDLE_WIDTH, y: canvas.height/2 - PADDLE_HEIGHT/2, dy: 0 };
+        const ball = { x: canvas.width/2, y: canvas.height/2, dx: 4, dy: 4, speed: 5 };
 
-            // 0-40s Logic
-            if (ovr > 0) {
-                container.classList.add('corrupt-shake');
-                
-                spans.forEach((span, i) => {
-                    const progress = ovr / 40; // 0 to 1
+        // Gestion des touches
+        const keys = {};
 
-                    // Phase 1: Turn Red (Starts 0s, ends 15s)
-                    if (ovr > 0 && ovr <= 15) {
-                        const redChance = Math.min(ovr / 15, 1);
-                        if (Math.random() < redChance) {
-                            span.style.color = "var(--warning)";
-                            span.style.textShadow = "0 0 5px var(--warning)";
-                        }
-                    }
-
-                    // Phase 2: Symbols (Starts 10s, ends 25s)
-                    if (ovr > 10) {
-                        container.classList.add('corrupt-jump');
-                        const symbolChance = Math.min((ovr - 10) / 15, 1);
-                        if (Math.random() < symbolChance && !span.dataset.original) {
-                            span.dataset.original = span.innerText;
-                            span.innerText = SCARY_SYMBOLS[Math.floor(Math.random() * SCARY_SYMBOLS.length)];
-                        }
-                    }
-
-                    // Phase 3: Fade Out (Starts 25s, ends 40s)
-                    if (ovr > 25) {
-                        const fadeProgress = Math.min((ovr - 25) / 15, 1);
-                        span.style.opacity = 1 - fadeProgress;
-                    }
-                });
-
-                // Image degradation
-                if (ovr > 15) {
-                    images.forEach(img => img.classList.add('corrupt-image', 'corrupt-saturate'));
-                }
-                if (ovr > 25) {
-                    wrapper.classList.add('corrupt-red-alert');
-                    container.classList.add('corrupt-red-blur');
-                    container.querySelectorAll('.image-box').forEach(box => box.classList.add('corrupt-broken', 'corrupt-drips'));
-                }
-                if (ovr > 33) {
-                    container.classList.add('corrupt-noise');
-                }
-                if (ovr >= 40) {
-                    container.classList.add('corrupt-final');
-                }
+        window.addEventListener('keydown', e => {
+            keys[e.key.toLowerCase()] = true;
+            if (e.code === 'Space' && (gameState === 'START' || gameState === 'GAMEOVER')) {
+                resetGame();
+                gameState = 'PLAY';
+                startScreen.querySelector('.msg-box').classList.remove('active');
             }
-        }
-
-        function updateTimerUI() {
-            const display = document.getElementById('timer-display'); if (!display) return;
-            timeLeft--;
-            const ovr = Math.abs(timeLeft);
-            if (timeLeft < 0) { 
-                display.innerHTML = `OVERTIME: +${ovr}s`; 
-                display.style.color = 'var(--warning)'; 
-                processCorruptionProgressive(ovr); 
-            }
-            else { display.innerHTML = `SYS: NOMINAL / ${timeLeft}s`; display.style.color = 'var(--primary)'; }
-        }
-
-        function resetCorruption() {
-            const container = document.getElementById('slide-container'), wrapper = document.getElementById('master-wrapper');
-            container.className = ""; wrapper.classList.remove('corrupt-red-alert');
-            document.querySelectorAll('.image-box').forEach(box => box.className = "image-box scanned");
-        }
-
-        function renderSlide() {
-            const data = presentationData[currentIndex], container = document.getElementById('slide-container'); container.innerHTML = '';
-            const isFirst = currentIndex === 0, isLast = data.type === "final-spectacular";
-            const timerHTML = isFirst ? '' : `<div class="tactical-timer ${isLast ? 'big-question-timer' : ''}" id="timer-display">SYS: NOMINAL / ${data.time}s</div>`;
-            const scanLine = '<div class="laser-line"></div>';
-
-            let html = '';
-            if (data.type === "cover") {
-                html = `<div class="slide-content centered-slide anim-text-in">
-                    <div class="mono">${data.badge}</div><h1>${data.title}</h1><h2 style="font-family:Orbitron; opacity:0.8; font-size:24px; margin-top:15px;">${data.subtitle}</h2>
-                    ${data.image ? `<div class="visual-part" style="width:65%; height:42%; margin-top:25px;"><div class="image-box scanned">${scanLine}<img src="${data.image}"></div></div>` : ''}
-                </div>`;
-            } else if (data.type === "final-spectacular") {
-                html = `<div class="slide-content">
-                    <div class="header-line anim-text-in"><div class="mono">// FINAL_DEBRIEFING</div></div>
-                    <div class="body-layout" style="align-items: center; gap: 20px;">
-                        <div class="visual-part" style="flex: 1; height: 320px;"><div class="image-box scanned" style="border-radius:8px; overflow:hidden;">${scanLine}<img src="${data.imageL}" style="object-fit: contain; background: #000;"><div class="gen-label" style="position:absolute;bottom:5px;width:100%;">NGF SCAF Concept</div></div></div>
-                        <div class="text-part centered-slide anim-text-in" style="flex: 1.8; min-width: 400px;"><h1>${data.title}</h1><h2 style="font-family:Orbitron; opacity:0.8; font-size:22px; margin-top:5px;">${data.subtitle}</h2>${timerHTML}</div>
-                        <div class="visual-part" style="flex: 1; height: 320px;"><div class="image-box scanned" style="border-radius:8px; overflow:hidden;">${scanLine}<img src="${data.imageR}" style="object-fit: contain; background: #000;"><div class="gen-label" style="position:absolute;bottom:5px;width:100%;">Airbus Wingman</div></div></div>
-                    </div>
-                </div>`;
-            } else if (data.type === "summary") {
-                html = `<div class="slide-content"><div class="header-line anim-text-in"><div class="mono">${data.header}</div>${timerHTML}</div><h3 class="anim-text-in">${data.title}</h3><div class="summary-grid">${data.grid.map((c, i) => `<div class="card anim-text-in" style="animation-delay:${i*0.1}s; display:flex; flex-direction:column; justify-content:center;"><h4>${c.h}</h4><p>${c.p}</p></div>`).join('')}</div></div>`;
-            } else if (data.type === "multi-gen") {
-                html = `<div class="slide-content"><div class="header-line anim-text-in"><div class="mono">${data.header}</div>${timerHTML}</div><div class="body-layout"><div class="text-part anim-text-in"><h3>${data.title}</h3>${data.cards.map(c => `<div class="card"><h4>${c.h}</h4><p>${c.p}</p></div>`).join('')}</div><div class="visual-part"><div class="generation-grid">${data.images.map((img, idx) => `<div class="gen-item"><div class="image-box scanned" style="flex:1;">${scanLine}<img src="${img}"></div><div class="gen-label">${data.imageLabels[idx]}</div></div>`).join('')}</div></div></div></div>`;
-            } else if (data.type === "standard") {
-                html = `<div class="slide-content"><div class="header-line anim-text-in"><div class="mono">${data.header}</div>${timerHTML}</div><div class="body-layout"><div class="text-part anim-text-in"><h3>${data.title}</h3>${data.cards.map(c => `<div class="card"><h4>${c.h}</h4><p>${c.p}</p></div>`).join('')}</div><div class="visual-part"><div class="image-box scanned">${scanLine}<img src="${data.image}"></div></div></div></div>`;
-            } else if (data.type === "companies") {
-                html = `<div class="slide-content"><div class="header-line anim-text-in"><div class="mono">${data.header}</div>${timerHTML}</div><h3 class="anim-text-in" style="text-align:center;">${data.title}</h3><div class="company-grid">${data.companies.map((c, i) => `<div class="company-card anim-text-in" style="animation-delay:${i*0.1}s;"><div class="mono" style="font-size:16px;">${c.n}</div><div style="font-size:11px; opacity:0.7;">${c.c}</div></div>`).join('')}</div></div>`;
-            } else if (data.type === "comm_vertical") {
-                html = `<div class="slide-content"><div class="header-line anim-text-in"><div class="mono">${data.header}</div>${timerHTML}</div><div class="body-layout"><div class="text-part anim-text-in"><h3>${data.title}</h3>${data.cards.map(c => `<div class="card"><h4>${c.h}</h4><p>${c.p}</p></div>`).join('')}</div><div class="visual-part" style="display:flex; flex-direction:column; gap:12px;"><div class="image-box scanned" style="flex:1;">${scanLine}<img src="${data.imgTop}"></div><div class=https://youtu.be/4VD51UvUw1M
-            }
-
-            container.innerHTML = html;
-            container.querySelectorAll('h1, h2, h3, h4, p, .mono, .gen-label').forEach(wrapText);
-            document.getElementById('slide-index').innerText = `${String(currentIndex + 1).padStart(2, '0')} / ${String(presentationData.length).padStart(2, '0')}`;
-            document.getElementById('prevBtn').disabled = (currentIndex === 0);
-            document.getElementById('nextBtn').disabled = (currentIndex === presentationData.length - 1);
-            
-            clearInterval(timerInterval);
-            timeLeft = data.time;
-            resetCorruption();
-            timerInterval = setInterval(updateTimerUI, 1000);
-            updateTimerUI();
-
-            setTimeout(() => {
-                document.querySelectorAll('.image-box').forEach(box => box.classList.add('scanned'));
-            }, 100);
-        }
-
-        function changeSlide(dir) {
-            currentIndex += dir;
-            if (currentIndex < 0) currentIndex = 0;
-            if (currentIndex >= presentationData.length) currentIndex = presentationData.length - 1;
-            renderSlide();
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === "ArrowRight" || e.key === " ") changeSlide(1);
-            if (e.key === "ArrowLeft") changeSlide(-1);
         });
+        window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
-        window.onload = renderSlide;
+        /**
+         * LOGIQUE DU MOTEUR PHYSIQUE
+         */
+        function update() {
+            if (gameState !== 'PLAY') return;
+
+            // Mouvement Joueur Gauche (A / Q)
+            if (keys['a']) playerL.y -= 7;
+            if (keys['q']) playerL.y += 7;
+
+            // Mouvement Joueur Droit (P / M)
+            if (keys['p']) playerR.y -= 7;
+            if (keys['m']) playerR.y += 7;
+
+            // Limites des raquettes
+            [playerL, playerR].forEach(p => {
+                if (p.y < 0) p.y = 0;
+                if (p.y > canvas.height - PADDLE_HEIGHT) p.y = canvas.height - PADDLE_HEIGHT;
+            });
+
+            // Mouvement de la balle
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            // Rebond murs (Haut/Bas)
+            if (ball.y <= 0 || ball.y >= canvas.height - BALL_SIZE) {
+                ball.dy *= -1;
+            }
+
+            // Collision Raquette Gauche
+            if (ball.x <= playerL.x + PADDLE_WIDTH && 
+                ball.y + BALL_SIZE >= playerL.y && 
+                ball.y <= playerL.y + PADDLE_HEIGHT) {
+                
+                // Calcul de l'angle en fonction de l'endroit où la balle tape la raquette
+                let collidePoint = (ball.y + BALL_SIZE/2) - (playerL.y + PADDLE_HEIGHT/2);
+                collidePoint = collidePoint / (PADDLE_HEIGHT/2);
+                let angleRad = (Math.PI/4) * collidePoint;
+
+                ball.dx = Math.cos(angleRad) * ball.speed;
+                ball.dy = Math.sin(angleRad) * ball.speed;
+                ball.speed += 0.2; // Accélération progressive
+            }
+
+            // Collision Raquette Droite
+            if (ball.x + BALL_SIZE >= playerR.x && 
+                ball.y + BALL_SIZE >= playerR.y && 
+                ball.y <= playerR.y + PADDLE_HEIGHT) {
+                
+                let collidePoint = (ball.y + BALL_SIZE/2) - (playerR.y + PADDLE_HEIGHT/2);
+                collidePoint = collidePoint / (PADDLE_HEIGHT/2);
+                let angleRad = (Math.PI/4) * collidePoint;
+
+                ball.dx = -Math.cos(angleRad) * ball.speed;
+                ball.dy = Math.sin(angleRad) * ball.speed;
+                ball.speed += 0.2;
+            }
+
+            // Gestion des scores
+            if (ball.x < 0) {
+                scoreR++;
+                checkWin();
+                resetBall(-1);
+            } else if (ball.x > canvas.width) {
+                scoreL++;
+                checkWin();
+                resetBall(1);
+            }
+
+            document.getElementById('scoreL').innerText = scoreL;
+            document.getElementById('scoreR').innerText = scoreR;
+        }
+
+        function resetBall(direction) {
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height / 2;
+            ball.speed = 5;
+            ball.dx = direction * ball.speed;
+            ball.dy = (Math.random() - 0.5) * 6;
+        }
+
+        function resetGame() {
+            scoreL = 0;
+            scoreR = 0;
+            resetBall(1);
+            playerL.y = canvas.height/2 - PADDLE_HEIGHT/2;
+            playerR.y = canvas.height/2 - PADDLE_HEIGHT/2;
+        }
+
+        function checkWin() {
+            if (scoreL >= WINNING_SCORE || scoreR >= WINNING_SCORE) {
+                gameState = 'GAMEOVER';
+                const winner = scoreL >= WINNING_SCORE ? "JOUEUR 1" : "JOUEUR 2";
+                const msg = startScreen.querySelector('.msg-box');
+                msg.querySelector('h1').innerText = `${winner} GAGNE !`;
+                msg.classList.add('active');
+            }
+        }
+
+        /**
+         * RENDU GRAPHIQUE
+         */
+        function draw() {
+            // Effacement avec traînée légère
+            ctx.fillStyle = 'rgba(2, 6, 23, 0.3)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Ligne centrale
+            ctx.setLineDash([10, 15]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.strokeStyle = 'rgba(0, 242, 255, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Dessin des raquettes (Néon)
+            ctx.shadowBlur = 15;
+            
+            // Joueur Gauche (Bleu)
+            ctx.fillStyle = '#00f2ff';
+            ctx.shadowColor = '#00f2ff';
+            ctx.fillRect(playerL.x, playerL.y, PADDLE_WIDTH, PADDLE_HEIGHT);
+
+            // Joueur Droit (Rose)
+            ctx.fillStyle = '#f43f5e';
+            ctx.shadowColor = '#f43f5e';
+            ctx.fillRect(playerR.x, playerR.y, PADDLE_WIDTH, PADDLE_HEIGHT);
+
+            // Dessin de la balle
+            ctx.fillStyle = '#fff';
+            ctx.shadowColor = '#fff';
+            ctx.shadowBlur = 10;
+            ctx.fillRect(ball.x, ball.y, BALL_SIZE, BALL_SIZE);
+            
+            ctx.shadowBlur = 0; // Reset pour les performances
+
+            requestAnimationFrame(() => {
+                update();
+                draw();
+            });
+        }
+
+        // Démarrage de la boucle
+        draw();
     </script>
 </body>
 </html>
