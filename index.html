@@ -138,7 +138,7 @@
 
     <script>
         /**
-         * CYBER-ODYSSEY ONLINE ENGINE
+         * CYBER-ODYSSEY ONLINE ENGINE - VERSION STABLE
          */
 
         let scene, camera, renderer, clock;
@@ -148,7 +148,7 @@
         
         // États du jeu
         const keys = {};
-        let questState = 0; // 0: No Quest, 1: Active, 2: Done
+        let questState = 0; // 0: Pas de quête, 1: Active, 2: Terminée
         let killedCount = 0;
         const TARGET_KILL = 5;
         let isDialogOpen = false;
@@ -234,12 +234,12 @@
         function handleKeyDown(e) {
             keys[e.key.toLowerCase()] = true;
 
-            // Attaque
+            // Attaque avec la touche Entrée
             if (e.key === 'Enter') {
                 performAttack();
             }
 
-            // Interaction
+            // Interaction avec Espace
             if (e.code === 'Space') {
                 if (isDialogOpen) {
                     closeDialogue();
@@ -315,7 +315,7 @@
         }
 
         function performAttack() {
-            // Effet visuel d'attaque
+            // Effet visuel d'attaque (impulsion)
             const pulseGeo = new THREE.SphereGeometry(4, 16, 16);
             const pulseMat = new THREE.MeshBasicMaterial({ color: 0x00f2ff, transparent: true, opacity: 0.5 });
             const pulse = new THREE.Mesh(pulseGeo, pulseMat);
@@ -323,32 +323,33 @@
             scene.add(pulse);
             particles.push({ mesh: pulse, life: 1.0 });
 
-            // Détection de dégâts
-            monsters.forEach((m, index) => {
+            // Détection de dégâts sécurisée (parcours inverse pour éviter les plantages lors du splice)
+            for (let i = monsters.length - 1; i >= 0; i--) {
+                const m = monsters[i];
                 if (m.position.distanceTo(player.position) < 4) {
                     m.hp -= 1;
                     if (m.hp <= 0) {
                         createExplosion(m.position);
                         scene.remove(m);
-                        monsters.splice(index, 1);
+                        monsters.splice(i, 1);
                         if (questState === 1) {
                             killedCount++;
                             updateQuestUI();
                         }
                     }
                 }
-            });
+            }
         }
 
         function createExplosion(pos) {
             const expGeo = new THREE.BoxGeometry(0.2, 0.2, 0.2);
             const expMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });
             for(let i=0; i<10; i++) {
-                const p = new THREE.Mesh(expGeo, expMat);
-                p.position.copy(pos);
-                p.userData.vel = new THREE.Vector3((Math.random()-0.5)*0.2, Math.random()*0.2, (Math.random()-0.5)*0.2);
-                scene.add(p);
-                particles.push({ mesh: p, life: 1.0, isExp: true });
+                const pPart = new THREE.Mesh(expGeo, expMat);
+                pPart.position.copy(pos);
+                pPart.userData.vel = new THREE.Vector3((Math.random()-0.5)*0.2, Math.random()*0.2, (Math.random()-0.5)*0.2);
+                scene.add(pPart);
+                particles.push({ mesh: pPart, life: 1.0, isExp: true });
             }
         }
 
@@ -364,16 +365,15 @@
             if (move.length() > 0) {
                 move.normalize().multiplyScalar(MOVE_SPEED);
                 player.position.add(move);
-                // Orientation
                 const targetAngle = Math.atan2(move.x, move.z);
                 player.rotation.y = targetAngle;
             }
 
-            // Caméra suit le joueur
+            // La caméra suit le joueur
             camera.position.lerp(new THREE.Vector3(player.position.x, player.position.y + 10, player.position.z + 15), 0.1);
             camera.lookAt(player.position);
 
-            // Hint interaction
+            // Aide visuelle pour l'interaction
             if (player.position.distanceTo(npc.position) < 4) {
                 document.getElementById('hint').style.display = 'block';
             } else {
@@ -391,23 +391,24 @@
             npc.questIcon.rotation.y += 0.05;
             npc.questIcon.position.y = 2 + Math.sin(time * 2) * 0.2;
 
-            // Animation Monstres (ils tournent un peu)
+            // Animation Monstres
             monsters.forEach(m => {
                 m.rotation.x += 0.02;
                 m.rotation.y += 0.02;
                 m.position.y = 1.5 + Math.sin(time * 3 + m.position.x) * 0.3;
             });
 
-            // Simulation MMO: Mouvement des autres joueurs
-            otherPlayers.forEach(p => {
+            // Simulation MMO: Mouvement des IA
+            otherPlayers.forEach(pIA => {
                 if (Math.random() > 0.98) {
-                    p.target.set((Math.random()-0.5)*100, 1, (Math.random()-0.5)*100);
+                    pIA.target.set((Math.random()-0.5)*100, 1, (Math.random()-0.5)*100);
                 }
-                p.mesh.position.lerp(p.target, 0.01);
+                pIA.mesh.position.lerp(pIA.target, 0.01);
             });
 
-            // Gestion particules & effets
-            particles.forEach((p, i) => {
+            // Gestion particules & effets sécurisée (parcours inverse)
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
                 p.life -= 0.02;
                 if (p.isExp) {
                     p.mesh.position.add(p.userData.vel);
@@ -420,7 +421,7 @@
                     scene.remove(p.mesh);
                     particles.splice(i, 1);
                 }
-            });
+            }
 
             renderer.render(scene, camera);
         }
