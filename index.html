@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong Neo-Classic | GitHub Edition</title>
+    <title>Pong Neo-Classic | GitHub Edition (Solo vs Bot)</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -31,7 +31,7 @@
         #game-container {
             position: relative;
             border: 4px solid var(--neon-blue);
-            box-shadow: 0 0 20px var(--primary-dim), inset 0 0 20px rgba(0, 242, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4), inset 0 0 20px rgba(0, 242, 255, 0.2);
             background: var(--bg-dark);
             border-radius: 8px;
         }
@@ -75,7 +75,7 @@
         }
 
         .msg-box {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             padding: 20px 40px;
             border: 2px solid var(--neon-pink);
             border-radius: 10px;
@@ -104,14 +104,14 @@
             <div class="msg-box active">
                 <h1>PONG NEO-CLASSIC</h1>
                 <p>JOUEUR 1: [A] HAUT | [Q] BAS</p>
-                <p>JOUEUR 2: [P] HAUT | [M] BAS</p>
+                <p>JOUEUR 2: [BOT IA TACTIQUE]</p>
                 <p class="blink" style="margin-top: 20px; color: var(--neon-blue);">APPUYEZ SUR [ESPACE] POUR LANCER</p>
             </div>
         </div>
 
         <div class="instructions">
-            <div>G: A / Q</div>
-            <div>D: P / M</div>
+            <div>CONTRÔLES G : A / Q</div>
+            <div>JOUEUR VS IA</div>
         </div>
     </div>
 
@@ -123,7 +123,6 @@
         const ctx = canvas.getContext('2d');
         const startScreen = document.getElementById('startScreen');
         
-        // Tailles fixes pour GitHub Preview mais adaptables
         canvas.width = 800;
         canvas.height = 500;
 
@@ -137,8 +136,8 @@
         let scoreR = 0;
 
         // Objets du jeu
-        const playerL = { x: 20, y: canvas.height/2 - PADDLE_HEIGHT/2, dy: 0 };
-        const playerR = { x: canvas.width - 20 - PADDLE_WIDTH, y: canvas.height/2 - PADDLE_HEIGHT/2, dy: 0 };
+        const playerL = { x: 20, y: canvas.height/2 - PADDLE_HEIGHT/2 };
+        const botR = { x: canvas.width - 20 - PADDLE_WIDTH, y: canvas.height/2 - PADDLE_HEIGHT/2, speed: 4.5 };
         const ball = { x: canvas.width/2, y: canvas.height/2, dx: 4, dy: 4, speed: 5 };
 
         // Gestion des touches
@@ -160,16 +159,21 @@
         function update() {
             if (gameState !== 'PLAY') return;
 
-            // Mouvement Joueur Gauche (A / Q)
+            // Mouvement Joueur 1 (Gaucher)
             if (keys['a']) playerL.y -= 7;
             if (keys['q']) playerL.y += 7;
 
-            // Mouvement Joueur Droit (P / M)
-            if (keys['p']) playerR.y -= 7;
-            if (keys['m']) playerR.y += 7;
+            // Logique du Bot (Droit)
+            // Le bot tente d'aligner le centre de sa raquette avec la balle
+            let botCenter = botR.y + PADDLE_HEIGHT / 2;
+            if (botCenter < ball.y - 10) {
+                botR.y += botR.speed;
+            } else if (botCenter > ball.y + 10) {
+                botR.y -= botR.speed;
+            }
 
-            // Limites des raquettes
-            [playerL, playerR].forEach(p => {
+            // Limites des raquettes (Collision murs)
+            [playerL, botR].forEach(p => {
                 if (p.y < 0) p.y = 0;
                 if (p.y > canvas.height - PADDLE_HEIGHT) p.y = canvas.height - PADDLE_HEIGHT;
             });
@@ -183,27 +187,26 @@
                 ball.dy *= -1;
             }
 
-            // Collision Raquette Gauche
+            // Collision Raquette Gauche (Joueur)
             if (ball.x <= playerL.x + PADDLE_WIDTH && 
                 ball.y + BALL_SIZE >= playerL.y && 
                 ball.y <= playerL.y + PADDLE_HEIGHT) {
                 
-                // Calcul de l'angle en fonction de l'endroit où la balle tape la raquette
                 let collidePoint = (ball.y + BALL_SIZE/2) - (playerL.y + PADDLE_HEIGHT/2);
                 collidePoint = collidePoint / (PADDLE_HEIGHT/2);
                 let angleRad = (Math.PI/4) * collidePoint;
 
                 ball.dx = Math.cos(angleRad) * ball.speed;
                 ball.dy = Math.sin(angleRad) * ball.speed;
-                ball.speed += 0.2; // Accélération progressive
+                ball.speed += 0.2; // Accélération
             }
 
-            // Collision Raquette Droite
-            if (ball.x + BALL_SIZE >= playerR.x && 
-                ball.y + BALL_SIZE >= playerR.y && 
-                ball.y <= playerR.y + PADDLE_HEIGHT) {
+            // Collision Raquette Droite (Bot)
+            if (ball.x + BALL_SIZE >= botR.x && 
+                ball.y + BALL_SIZE >= botR.y && 
+                ball.y <= botR.y + PADDLE_HEIGHT) {
                 
-                let collidePoint = (ball.y + BALL_SIZE/2) - (playerR.y + PADDLE_HEIGHT/2);
+                let collidePoint = (ball.y + BALL_SIZE/2) - (botR.y + PADDLE_HEIGHT/2);
                 collidePoint = collidePoint / (PADDLE_HEIGHT/2);
                 let angleRad = (Math.PI/4) * collidePoint;
 
@@ -240,13 +243,13 @@
             scoreR = 0;
             resetBall(1);
             playerL.y = canvas.height/2 - PADDLE_HEIGHT/2;
-            playerR.y = canvas.height/2 - PADDLE_HEIGHT/2;
+            botR.y = canvas.height/2 - PADDLE_HEIGHT/2;
         }
 
         function checkWin() {
             if (scoreL >= WINNING_SCORE || scoreR >= WINNING_SCORE) {
                 gameState = 'GAMEOVER';
-                const winner = scoreL >= WINNING_SCORE ? "JOUEUR 1" : "JOUEUR 2";
+                const winner = scoreL >= WINNING_SCORE ? "JOUEUR 1" : "L'IA TACTIQUE";
                 const msg = startScreen.querySelector('.msg-box');
                 msg.querySelector('h1').innerText = `${winner} GAGNE !`;
                 msg.classList.add('active');
@@ -257,7 +260,7 @@
          * RENDU GRAPHIQUE
          */
         function draw() {
-            // Effacement avec traînée légère
+            // Fond avec effet de traînée
             ctx.fillStyle = 'rgba(2, 6, 23, 0.3)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -266,23 +269,23 @@
             ctx.beginPath();
             ctx.moveTo(canvas.width / 2, 0);
             ctx.lineTo(canvas.width / 2, canvas.height);
-            ctx.strokeStyle = 'rgba(0, 242, 255, 0.2)';
+            ctx.strokeStyle = 'rgba(0, 242, 255, 0.1)';
             ctx.lineWidth = 2;
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // Dessin des raquettes (Néon)
+            // Dessin des raquettes (Effet Néon)
             ctx.shadowBlur = 15;
             
-            // Joueur Gauche (Bleu)
+            // Joueur (Bleu)
             ctx.fillStyle = '#00f2ff';
             ctx.shadowColor = '#00f2ff';
             ctx.fillRect(playerL.x, playerL.y, PADDLE_WIDTH, PADDLE_HEIGHT);
 
-            // Joueur Droit (Rose)
+            // Bot (Rose)
             ctx.fillStyle = '#f43f5e';
             ctx.shadowColor = '#f43f5e';
-            ctx.fillRect(playerR.x, playerR.y, PADDLE_WIDTH, PADDLE_HEIGHT);
+            ctx.fillRect(botR.x, botR.y, PADDLE_WIDTH, PADDLE_HEIGHT);
 
             // Dessin de la balle
             ctx.fillStyle = '#fff';
@@ -290,7 +293,7 @@
             ctx.shadowBlur = 10;
             ctx.fillRect(ball.x, ball.y, BALL_SIZE, BALL_SIZE);
             
-            ctx.shadowBlur = 0; // Reset pour les performances
+            ctx.shadowBlur = 0; 
 
             requestAnimationFrame(() => {
                 update();
@@ -298,7 +301,6 @@
             });
         }
 
-        // Démarrage de la boucle
         draw();
     </script>
 </body>
