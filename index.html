@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong Neo-Classic | GitHub Edition (Solo vs Bot)</title>
+    <title>Tetris Neo-Classic | GitHub Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -28,10 +28,16 @@
             overflow: hidden;
         }
 
+        .game-layout {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
         #game-container {
             position: relative;
             border: 4px solid var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4), inset 0 0 20px rgba(0, 242, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
             background: var(--bg-dark);
             border-radius: 8px;
         }
@@ -39,6 +45,33 @@
         canvas {
             display: block;
             image-rendering: pixelated;
+        }
+
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 200px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--neon-pink);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--neon-blue);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
         }
 
         .ui-overlay {
@@ -49,34 +82,12 @@
             text-align: center;
             pointer-events: none;
             width: 100%;
-        }
-
-        .score-board {
-            position: absolute;
-            top: 20px;
-            width: 100%;
-            display: flex;
-            justify-content: space-around;
-            font-size: 48px;
-            opacity: 0.8;
-            pointer-events: none;
-        }
-
-        .instructions {
-            position: absolute;
-            bottom: -60px;
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--neon-blue);
-            text-transform: uppercase;
+            z-index: 10;
         }
 
         .msg-box {
-            background: rgba(0, 0, 0, 0.85);
-            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
             border: 2px solid var(--neon-pink);
             border-radius: 10px;
             display: none;
@@ -85,223 +96,129 @@
         .active { display: block; }
 
         h1 { font-size: 24px; margin-bottom: 10px; color: var(--neon-pink); }
-        p { font-size: 14px; margin: 5px 0; }
         .blink { animation: blink 1s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .controls-hint {
+            margin-top: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--neon-blue);
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-    <div id="game-container">
-        <div class="score-board">
-            <div id="scoreL">0</div>
-            <div id="scoreR">0</div>
-        </div>
-
-        <canvas id="pongCanvas"></canvas>
-
-        <div class="ui-overlay" id="startScreen">
-            <div class="msg-box active">
-                <h1>PONG NEO-CLASSIC</h1>
-                <p>JOUEUR 1: [A] HAUT | [Q] BAS</p>
-                <p>JOUEUR 2: [BOT IA TACTIQUE]</p>
-                <p class="blink" style="margin-top: 20px; color: var(--neon-blue);">APPUYEZ SUR [ESPACE] POUR LANCER</p>
+    <div class="game-layout">
+        <div id="game-container">
+            <canvas id="tetrisCanvas"></canvas>
+            
+            <div class="ui-overlay" id="overlay">
+                <div class="msg-box active" id="startScreen">
+                    <h1>TETRIS NEO</h1>
+                    <p style="font-size: 14px;">[Q] GAUCHE | [D] DROITE</p>
+                    <p style="font-size: 14px;">[Z] PIVOTER | [S] DESCENDRE</p>
+                    <p class="blink" style="margin-top: 20px; color: var(--neon-blue);">[ESPACE] POUR JOUER</p>
+                </div>
+                <div class="msg-box" id="gameOverScreen">
+                    <h1>GAME OVER</h1>
+                    <p id="finalScoreDisplay">Score: 0</p>
+                    <p class="blink" style="margin-top: 20px; color: var(--neon-blue);">[ESPACE] REJOUER</p>
+                </div>
             </div>
         </div>
 
-        <div class="instructions">
-            <div>CONTRÔLES G : A / Q</div>
-            <div>JOUEUR VS IA</div>
+        <div class="side-panel">
+            <div class="stat-box">
+                <div class="stat-label">SCORE</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">LIGNES</div>
+                <div class="stat-value" id="lines">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">NIVEAU</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+            <div class="controls-hint">
+                Z : Rotation<br>
+                Q : Gauche<br>
+                S : Bas<br>
+                D : Droite
+            </div>
         </div>
     </div>
 
     <script>
-        /**
-         * CONFIGURATION ET VARIABLES GLOBALES
-         */
-        const canvas = document.getElementById('pongCanvas');
+        const canvas = document.getElementById('tetrisCanvas');
         const ctx = canvas.getContext('2d');
-        const startScreen = document.getElementById('startScreen');
-        
-        canvas.width = 800;
-        canvas.height = 500;
+        const scoreElement = document.getElementById('score');
+        const linesElement = document.getElementById('lines');
+        const levelElement = document.getElementById('level');
 
-        const PADDLE_WIDTH = 10;
-        const PADDLE_HEIGHT = 80;
-        const BALL_SIZE = 8;
-        const WINNING_SCORE = 5;
+        const ROW = 20;
+        const COL = 10;
+        const SQ = 30; // Taille d'un carré
+        const VACANT = "rgba(2, 6, 23, 0.1)"; // Couleur vide
 
-        let gameState = 'START'; // START, PLAY, GAMEOVER
-        let scoreL = 0;
-        let scoreR = 0;
+        canvas.width = COL * SQ;
+        canvas.height = ROW * SQ;
 
-        // Objets du jeu
-        const playerL = { x: 20, y: canvas.height/2 - PADDLE_HEIGHT/2 };
-        const botR = { x: canvas.width - 20 - PADDLE_WIDTH, y: canvas.height/2 - PADDLE_HEIGHT/2, speed: 4.5 };
-        const ball = { x: canvas.width/2, y: canvas.height/2, dx: 4, dy: 4, speed: 5 };
+        // Couleurs Néon des pièces
+        const COLORS = {
+            I: "#00f2ff", // Cyan
+            J: "#3b82f6", // Bleu
+            L: "#f59e0b", // Orange
+            O: "#ef4444", // Rouge (utilisé pour O ici)
+            S: "#10b981", // Vert
+            T: "#a855f7", // Violet
+            Z: "#f43f5e"  // Rose
+        };
 
-        // Gestion des touches
-        const keys = {};
-
-        window.addEventListener('keydown', e => {
-            keys[e.key.toLowerCase()] = true;
-            if (e.code === 'Space' && (gameState === 'START' || gameState === 'GAMEOVER')) {
-                resetGame();
-                gameState = 'PLAY';
-                startScreen.querySelector('.msg-box').classList.remove('active');
-            }
-        });
-        window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
-
-        /**
-         * LOGIQUE DU MOTEUR PHYSIQUE
-         */
-        function update() {
-            if (gameState !== 'PLAY') return;
-
-            // Mouvement Joueur 1 (Gaucher)
-            if (keys['a']) playerL.y -= 7;
-            if (keys['q']) playerL.y += 7;
-
-            // Logique du Bot (Droit)
-            // Le bot tente d'aligner le centre de sa raquette avec la balle
-            let botCenter = botR.y + PADDLE_HEIGHT / 2;
-            if (botCenter < ball.y - 10) {
-                botR.y += botR.speed;
-            } else if (botCenter > ball.y + 10) {
-                botR.y -= botR.speed;
-            }
-
-            // Limites des raquettes (Collision murs)
-            [playerL, botR].forEach(p => {
-                if (p.y < 0) p.y = 0;
-                if (p.y > canvas.height - PADDLE_HEIGHT) p.y = canvas.height - PADDLE_HEIGHT;
-            });
-
-            // Mouvement de la balle
-            ball.x += ball.dx;
-            ball.y += ball.dy;
-
-            // Rebond murs (Haut/Bas)
-            if (ball.y <= 0 || ball.y >= canvas.height - BALL_SIZE) {
-                ball.dy *= -1;
-            }
-
-            // Collision Raquette Gauche (Joueur)
-            if (ball.x <= playerL.x + PADDLE_WIDTH && 
-                ball.y + BALL_SIZE >= playerL.y && 
-                ball.y <= playerL.y + PADDLE_HEIGHT) {
-                
-                let collidePoint = (ball.y + BALL_SIZE/2) - (playerL.y + PADDLE_HEIGHT/2);
-                collidePoint = collidePoint / (PADDLE_HEIGHT/2);
-                let angleRad = (Math.PI/4) * collidePoint;
-
-                ball.dx = Math.cos(angleRad) * ball.speed;
-                ball.dy = Math.sin(angleRad) * ball.speed;
-                ball.speed += 0.2; // Accélération
-            }
-
-            // Collision Raquette Droite (Bot)
-            if (ball.x + BALL_SIZE >= botR.x && 
-                ball.y + BALL_SIZE >= botR.y && 
-                ball.y <= botR.y + PADDLE_HEIGHT) {
-                
-                let collidePoint = (ball.y + BALL_SIZE/2) - (botR.y + PADDLE_HEIGHT/2);
-                collidePoint = collidePoint / (PADDLE_HEIGHT/2);
-                let angleRad = (Math.PI/4) * collidePoint;
-
-                ball.dx = -Math.cos(angleRad) * ball.speed;
-                ball.dy = Math.sin(angleRad) * ball.speed;
-                ball.speed += 0.2;
-            }
-
-            // Gestion des scores
-            if (ball.x < 0) {
-                scoreR++;
-                checkWin();
-                resetBall(-1);
-            } else if (ball.x > canvas.width) {
-                scoreL++;
-                checkWin();
-                resetBall(1);
-            }
-
-            document.getElementById('scoreL').innerText = scoreL;
-            document.getElementById('scoreR').innerText = scoreR;
-        }
-
-        function resetBall(direction) {
-            ball.x = canvas.width / 2;
-            ball.y = canvas.height / 2;
-            ball.speed = 5;
-            ball.dx = direction * ball.speed;
-            ball.dy = (Math.random() - 0.5) * 6;
-        }
-
-        function resetGame() {
-            scoreL = 0;
-            scoreR = 0;
-            resetBall(1);
-            playerL.y = canvas.height/2 - PADDLE_HEIGHT/2;
-            botR.y = canvas.height/2 - PADDLE_HEIGHT/2;
-        }
-
-        function checkWin() {
-            if (scoreL >= WINNING_SCORE || scoreR >= WINNING_SCORE) {
-                gameState = 'GAMEOVER';
-                const winner = scoreL >= WINNING_SCORE ? "JOUEUR 1" : "L'IA TACTIQUE";
-                const msg = startScreen.querySelector('.msg-box');
-                msg.querySelector('h1').innerText = `${winner} GAGNE !`;
-                msg.classList.add('active');
-            }
-        }
-
-        /**
-         * RENDU GRAPHIQUE
-         */
-        function draw() {
-            // Fond avec effet de traînée
-            ctx.fillStyle = 'rgba(2, 6, 23, 0.3)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Ligne centrale
-            ctx.setLineDash([10, 15]);
-            ctx.beginPath();
-            ctx.moveTo(canvas.width / 2, 0);
-            ctx.lineTo(canvas.width / 2, canvas.height);
-            ctx.strokeStyle = 'rgba(0, 242, 255, 0.1)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            // Dessin des raquettes (Effet Néon)
-            ctx.shadowBlur = 15;
-            
-            // Joueur (Bleu)
-            ctx.fillStyle = '#00f2ff';
-            ctx.shadowColor = '#00f2ff';
-            ctx.fillRect(playerL.x, playerL.y, PADDLE_WIDTH, PADDLE_HEIGHT);
-
-            // Bot (Rose)
-            ctx.fillStyle = '#f43f5e';
-            ctx.shadowColor = '#f43f5e';
-            ctx.fillRect(botR.x, botR.y, PADDLE_WIDTH, PADDLE_HEIGHT);
-
-            // Dessin de la balle
-            ctx.fillStyle = '#fff';
-            ctx.shadowColor = '#fff';
-            ctx.shadowBlur = 10;
-            ctx.fillRect(ball.x, ball.y, BALL_SIZE, BALL_SIZE);
-            
-            ctx.shadowBlur = 0; 
-
-            requestAnimationFrame(() => {
-                update();
-                draw();
-            });
-        }
-
-        draw();
-    </script>
-</body>
-</html>
+        const PIECES = [
+            [
+                [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+                [[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]],
+                [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+                [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]],
+                "I"
+            ],
+            [
+                [[1,0,0],[1,1,1],[0,0,0]],
+                [[0,1,1],[0,1,0],[0,1,0]],
+                [[0,0,0],[1,1,1],[0,0,1]],
+                [[0,1,0],[0,1,0],[1,1,0]],
+                "J"
+            ],
+            [
+                [[0,0,1],[1,1,1],[0,0,0]],
+                [[0,1,0],[0,1,0],[0,1,1]],
+                [[0,0,0],[1,1,1],[1,0,0]],
+                [[1,1,0],[0,1,0],[0,1,0]],
+                "L"
+            ],
+            [
+                [[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],
+                [[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],
+                [[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],
+                [[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],
+                "O"
+            ],
+            [
+                [[0,1,1],[1,1,0],[0,0,0]],
+                [[0,1,0],[0,1,1],[0,0,1]],
+                [[0,0,0],[0,1,1],[1,1,0]],
+                [[1,0,0],[1,1,0],[0,1,0]],
+                "S"
+            ],
+            [
+                [[0,1,0],[1,1,1],[0,0,0]],
+                [[0,1,0],[0,1,1],[0,1,0]],
+                [[0,0,0],[1,1,1],[0,1,0]],
+                [[0,1,0],[1,1,0],[0,1,0]],
+                "T"
+            ],
+            [
+                [[1,1,0],[0,1,1],[0,0,0]],
