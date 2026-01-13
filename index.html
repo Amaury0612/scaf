@@ -3,298 +3,433 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Héli-Bird AS-355</title>
+    <title>Pac-Man Retro</title>
     <style>
         body {
             margin: 0;
-            overflow: hidden;
-            background-color: #222;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-color: #111;
             color: white;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
         }
         #game-container {
             position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            border: 4px solid #444;
-            border-radius: 8px;
-            overflow: hidden;
+            border: 4px solid #222;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
         canvas {
             display: block;
-            background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
+            background-color: black;
         }
-        #ui-overlay {
+        #ui {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+        .overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            background: rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            background: rgba(0, 0, 0, 0.4);
-            transition: opacity 0.3s;
+            justify-content: center;
+            z-index: 10;
         }
-        .menu-content {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        h1 { margin: 0 0 10px 0; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-        p { font-size: 1.2rem; }
-        .btn {
-            background: #f1c40f;
-            color: #2c3e50;
+        .hidden { display: none; }
+        h1 { color: #ffff00; text-shadow: 2px 2px #ff0000; margin: 0; }
+        button {
+            background: #ffff00;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 10px 20px;
+            font-size: 18px;
             font-weight: bold;
-            border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
             margin-top: 20px;
+            font-family: inherit;
         }
-        .btn:hover {
-            background: #f39c12;
-            transform: scale(1.05);
-        }
-        #score-display {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 3rem;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            pointer-events: none;
-        }
-        .hidden { display: none !important; opacity: 0; }
+        button:hover { background: #fff; }
     </style>
 </head>
 <body>
 
+    <div id="ui">
+        <div>Score: <span id="score">0</span></div>
+        <div>Vies: <span id="lives">3</span></div>
+    </div>
+
     <div id="game-container">
-        <canvas id="gameCanvas"></canvas>
-        <div id="score-display">0</div>
+        <canvas id="pacmanCanvas"></canvas>
         
-        <div id="ui-overlay">
-            <div class="menu-content" id="start-menu">
-                <h1>Héli-Bird AS-355</h1>
-                <p>Évitez les pannes et les obstacles !</p>
-                <p>Appuyez sur <strong>ESPACE</strong> ou <strong>CLIQUEZ</strong></p>
-                <button class="btn" onclick="startGame()">DÉCOLLAGE</button>
-            </div>
-            
-            <div class="menu-content hidden" id="game-over-menu">
-                <h1>CRASH !</h1>
-                <p id="final-score">Score: 0</p>
-                <p id="best-score">Meilleur: 0</p>
-                <button class="btn" onclick="startGame()">RÉESSAYER</button>
-            </div>
+        <div id="start-overlay" class="overlay">
+            <h1>PAC-MAN</h1>
+            <p>Utilisez les flèches pour bouger</p>
+            <button onclick="initGame()">COMMENCER</button>
+        </div>
+
+        <div id="game-over-overlay" class="overlay hidden">
+            <h1 id="status-text">GAME OVER</h1>
+            <p>Score final: <span id="final-score">0</span></p>
+            <button onclick="initGame()">REJOUER</button>
         </div>
     </div>
 
     <script>
-        const canvas = document.getElementById('gameCanvas');
+        const canvas = document.getElementById('pacmanCanvas');
         const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('score-display');
-        const uiOverlay = document.getElementById('ui-overlay');
-        const startMenu = document.getElementById('start-menu');
-        const gameOverMenu = document.getElementById('game-over-menu');
-        const finalScoreText = document.getElementById('final-score');
-        const bestScoreText = document.getElementById('best-score');
+        const scoreDisplay = document.getElementById('score');
+        const livesDisplay = document.getElementById('lives');
+        const startOverlay = document.getElementById('start-overlay');
+        const gameOverOverlay = document.getElementById('game-over-overlay');
+        const statusText = document.getElementById('status-text');
+        const finalScoreDisplay = document.getElementById('final-score');
 
-        // Dimensions du jeu
-        const GAME_WIDTH = 400;
-        const GAME_HEIGHT = 600;
-        canvas.width = GAME_WIDTH;
-        canvas.height = GAME_HEIGHT;
+        const TILE_SIZE = 20;
+        const MAP = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
+            [1,2,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,2,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1],
+            [1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1],
+            [1,1,1,1,0,1,1,1,3,1,3,1,1,1,0,1,1,1,1],
+            [3,3,3,1,0,1,3,3,3,3,3,3,3,1,0,1,3,3,3],
+            [1,1,1,1,0,1,3,1,1,4,1,1,3,1,0,1,1,1,1],
+            [3,3,3,3,0,3,3,1,3,3,3,1,3,3,0,3,3,3,3],
+            [1,1,1,1,0,1,3,1,1,1,1,1,3,1,0,1,1,1,1],
+            [3,3,3,1,0,1,3,3,3,3,3,3,3,1,0,1,3,3,3],
+            [1,1,1,1,0,1,3,1,1,1,1,1,3,1,0,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1],
+            [1,2,0,1,0,0,0,0,0,3,0,0,0,0,0,1,0,2,1],
+            [1,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1],
+            [1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1],
+            [1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
 
-        // Paramètres du jeu
-        let gameRunning = false;
-        let score = 0;
-        let bestScore = localStorage.getItem('heliBestScore') || 0;
+        // Légende Map: 1: Mur, 0: Point, 2: Super Point, 3: Vide, 4: Porte fantômes
 
-        // L'hélicoptère (Bird)
-        const heli = {
-            x: 50,
-            y: GAME_HEIGHT / 2,
-            width: 45,
-            height: 25,
-            gravity: 0.25,
-            velocity: 0,
-            jump: -5.5,
-            rotation: 0
-        };
+        canvas.width = MAP[0].length * TILE_SIZE;
+        canvas.height = MAP.length * TILE_SIZE;
 
-        // Tuyaux (Obstacles)
-        let pipes = [];
-        const pipeWidth = 60;
-        const pipeGap = 160;
-        const pipeSpeed = 2.5;
-        const pipeSpacing = 220;
+        let pacman, ghosts, pellets, powerPellets, score, lives, gameActive, powerModeTimer;
 
-        function createPipe() {
-            const minHeight = 50;
-            const maxHeight = GAME_HEIGHT - pipeGap - minHeight;
-            const height = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
-            
-            pipes.push({
-                x: GAME_WIDTH,
-                top: height,
-                bottom: GAME_HEIGHT - (height + pipeGap),
-                passed: false
-            });
-        }
+        class Entity {
+            constructor(x, y, color) {
+                this.gridX = x;
+                this.gridY = y;
+                this.x = x * TILE_SIZE + TILE_SIZE / 2;
+                this.y = y * TILE_SIZE + TILE_SIZE / 2;
+                this.color = color;
+                this.dir = { x: 0, y: 0 };
+                this.nextDir = { x: 0, y: 0 };
+                this.speed = 2;
+            }
 
-        // Contrôles
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                if (!gameRunning) {
-                    if (gameOverMenu.classList.contains('hidden')) startGame();
-                } else {
-                    jump();
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, TILE_SIZE / 2 - 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            updatePosition() {
+                // Tentative de changement de direction au centre d'une case
+                if (this.x % TILE_SIZE === TILE_SIZE / 2 && this.y % TILE_SIZE === TILE_SIZE / 2) {
+                    const currentGridX = Math.floor(this.x / TILE_SIZE);
+                    const currentGridY = Math.floor(this.y / TILE_SIZE);
+
+                    // Vérifier si le virage souhaité est possible
+                    if (this.canMove(this.nextDir.x, this.nextDir.y)) {
+                        this.dir = { ...this.nextDir };
+                    }
+
+                    // Arrêt si mur devant
+                    if (!this.canMove(this.dir.x, this.dir.y)) {
+                        this.dir = { x: 0, y: 0 };
+                    }
                 }
-                e.preventDefault();
+
+                this.x += this.dir.x * this.speed;
+                this.y += this.dir.y * this.speed;
+
+                // Téléportation bords
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
             }
-        });
 
-        canvas.addEventListener('mousedown', () => {
-            if (gameRunning) jump();
-        });
+            canMove(dx, dy) {
+                if (dx === 0 && dy === 0) return true;
+                const nextX = Math.floor(this.x / TILE_SIZE) + dx;
+                const nextY = Math.floor(this.y / TILE_SIZE) + dy;
+                
+                // Gestion tunnel
+                if (nextX < 0 || nextX >= MAP[0].length) return true;
 
-        function jump() {
-            heli.velocity = heli.jump;
+                return MAP[nextY][nextX] !== 1;
+            }
         }
 
-        function startGame() {
-            // Reset
-            heli.y = GAME_HEIGHT / 2;
-            heli.velocity = 0;
-            pipes = [];
+        class Pacman extends Entity {
+            constructor(x, y) {
+                super(x, y, "#ffff00");
+                this.mouthOpen = 0;
+                this.mouthSpeed = 0.15;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                let angle = 0;
+                if (this.dir.x === 1) angle = 0;
+                else if (this.dir.x === -1) angle = Math.PI;
+                else if (this.dir.y === 1) angle = Math.PI / 2;
+                else if (this.dir.y === -1) angle = -Math.PI / 2;
+
+                this.mouthOpen += this.mouthSpeed;
+                const open = (Math.sin(this.mouthOpen) + 1) * 0.2;
+
+                ctx.moveTo(this.x, this.y);
+                ctx.arc(this.x, this.y, TILE_SIZE / 2 - 1, angle + open, angle + Math.PI * 2 - open);
+                ctx.lineTo(this.x, this.y);
+                ctx.fill();
+            }
+        }
+
+        class Ghost extends Entity {
+            constructor(x, y, color) {
+                super(x, y, color);
+                this.isFrightened = false;
+                this.baseColor = color;
+                this.speed = 1.5;
+            }
+
+            draw() {
+                ctx.fillStyle = this.isFrightened ? "#0000ff" : this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y - 2, TILE_SIZE / 2 - 2, Math.PI, 0);
+                ctx.lineTo(this.x + (TILE_SIZE / 2 - 2), this.y + (TILE_SIZE / 2 - 2));
+                ctx.lineTo(this.x - (TILE_SIZE / 2 - 2), this.y + (TILE_SIZE / 2 - 2));
+                ctx.fill();
+                
+                // Yeux
+                ctx.fillStyle = "white";
+                ctx.beginPath();
+                ctx.arc(this.x - 4, this.y - 4, 3, 0, Math.PI * 2);
+                ctx.arc(this.x + 4, this.y - 4, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            moveRandomly() {
+                if (this.x % TILE_SIZE === TILE_SIZE / 2 && this.y % TILE_SIZE === TILE_SIZE / 2) {
+                    const directions = [
+                        { x: 1, y: 0 }, { x: -1, y: 0 },
+                        { x: 0, y: 1 }, { x: 0, y: -1 }
+                    ];
+                    
+                    // Priorité à continuer tout droit ou tourner, éviter demi-tour immédiat
+                    const validDirs = directions.filter(d => 
+                        this.canMove(d.x, d.y) && (d.x !== -this.dir.x || d.y !== -this.dir.y)
+                    );
+
+                    if (validDirs.length > 0) {
+                        this.dir = validDirs[Math.floor(Math.random() * validDirs.length)];
+                    } else {
+                        // Cul de sac: demi-tour
+                        this.dir = { x: -this.dir.x, y: -this.dir.y };
+                    }
+                }
+                this.x += this.dir.x * this.speed;
+                this.y += this.dir.y * this.speed;
+                
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+            }
+
+            reset() {
+                this.x = this.gridX * TILE_SIZE + TILE_SIZE / 2;
+                this.y = this.gridY * TILE_SIZE + TILE_SIZE / 2;
+                this.isFrightened = false;
+                this.dir = { x: 0, y: 0 };
+            }
+        }
+
+        function initGame() {
             score = 0;
-            scoreElement.innerText = score;
-            gameRunning = true;
+            lives = 3;
+            gameActive = true;
+            powerModeTimer = 0;
+            pellets = [];
+            powerPellets = [];
             
-            uiOverlay.classList.add('hidden');
-            startMenu.classList.add('hidden');
-            gameOverMenu.classList.add('hidden');
-            
-            createPipe();
-            requestAnimationFrame(gameLoop);
+            scoreDisplay.innerText = score;
+            livesDisplay.innerText = lives;
+            startOverlay.classList.add('hidden');
+            gameOverOverlay.classList.add('hidden');
+
+            pacman = new Pacman(9, 15);
+            ghosts = [
+                new Ghost(9, 9, "#ff0000"), // Blinky
+                new Ghost(8, 9, "#ffb8ff"), // Pinky
+                new Ghost(10, 9, "#00ffff"), // Inky
+                new Ghost(9, 8, "#ffb852")  // Clyde
+            ];
+
+            // Remplir les pastilles
+            for (let y = 0; y < MAP.length; y++) {
+                for (let x = 0; x < MAP[y].length; x++) {
+                    if (MAP[y][x] === 0) pellets.push({ x, y });
+                    else if (MAP[y][x] === 2) powerPellets.push({ x, y });
+                }
+            }
+
+            requestAnimationFrame(update);
         }
 
-        function gameOver() {
-            gameRunning = false;
-            if (score > bestScore) {
-                bestScore = score;
-                localStorage.setItem('heliBestScore', bestScore);
+        window.addEventListener('keydown', (e) => {
+            if (!gameActive) return;
+            switch(e.key) {
+                case 'ArrowUp': pacman.nextDir = { x: 0, y: -1 }; break;
+                case 'ArrowDown': pacman.nextDir = { x: 0, y: 1 }; break;
+                case 'ArrowLeft': pacman.nextDir = { x: -1, y: 0 }; break;
+                case 'ArrowRight': pacman.nextDir = { x: 1, y: 0 }; break;
             }
-            
-            finalScoreText.innerText = "Score: " + score;
-            bestScoreText.innerText = "Meilleur Score: " + bestScore;
-            
-            uiOverlay.classList.remove('hidden');
-            gameOverMenu.classList.remove('hidden');
-        }
+        });
 
         function update() {
-            if (!gameRunning) return;
+            if (!gameActive) return;
 
-            // Physique de l'hélico
-            heli.velocity += heli.gravity;
-            heli.y += heli.velocity;
-            
-            // Rotation basée sur la vitesse
-            heli.rotation = Math.min(Math.PI / 4, Math.max(-Math.PI / 4, (heli.velocity * 0.1)));
+            pacman.updatePosition();
 
-            // Sortie d'écran
-            if (heli.y + heli.height > GAME_HEIGHT || heli.y < 0) {
-                gameOver();
-            }
+            // Collision pastilles
+            const gx = Math.floor(pacman.x / TILE_SIZE);
+            const gy = Math.floor(pacman.y / TILE_SIZE);
 
-            // Gestion des tuyaux
-            for (let i = pipes.length - 1; i >= 0; i--) {
-                pipes[i].x -= pipeSpeed;
-
-                // Collision
-                if (
-                    heli.x < pipes[i].x + pipeWidth &&
-                    heli.x + heli.width > pipes[i].x &&
-                    (heli.y < pipes[i].top || heli.y + heli.height > GAME_HEIGHT - pipes[i].bottom)
-                ) {
-                    gameOver();
-                }
-
-                // Score
-                if (!pipes[i].passed && pipes[i].x + pipeWidth < heli.x) {
-                    pipes[i].passed = true;
-                    score++;
-                    scoreElement.innerText = score;
-                }
-
-                // Supprimer les tuyaux hors écran
-                if (pipes[i].x + pipeWidth < 0) {
-                    pipes.splice(i, 1);
+            const pelletIndex = pellets.findIndex(p => p.x === gx && p.y === gy);
+            if (pelletIndex !== -1) {
+                pellets.splice(pelletIndex, 1);
+                score += 10;
+                scoreDisplay.innerText = score;
+                if (pellets.length === 0 && powerPellets.length === 0) {
+                    endGame(true);
                 }
             }
 
-            // Nouveau tuyau
-            if (pipes.length > 0 && pipes[pipes.length - 1].x < GAME_WIDTH - pipeSpacing) {
-                createPipe();
+            const powerIndex = powerPellets.findIndex(p => p.x === gx && p.y === gy);
+            if (powerIndex !== -1) {
+                powerPellets.splice(powerIndex, 1);
+                score += 50;
+                scoreDisplay.innerText = score;
+                activatePowerMode();
             }
+
+            // Gestion fantômes
+            ghosts.forEach(ghost => {
+                ghost.moveRandomly();
+
+                // Collision Pac-Man / Fantôme
+                const dist = Math.hypot(pacman.x - ghost.x, pacman.y - ghost.y);
+                if (dist < TILE_SIZE - 5) {
+                    if (ghost.isFrightened) {
+                        ghost.reset();
+                        score += 200;
+                        scoreDisplay.innerText = score;
+                    } else {
+                        die();
+                    }
+                }
+            });
+
+            if (powerModeTimer > 0) {
+                powerModeTimer--;
+                if (powerModeTimer === 0) {
+                    ghosts.forEach(g => g.isFrightened = false);
+                }
+            }
+
+            draw();
+            requestAnimationFrame(update);
+        }
+
+        function activatePowerMode() {
+            powerModeTimer = 400; // ~7 secondes à 60fps
+            ghosts.forEach(g => g.isFrightened = true);
+        }
+
+        function die() {
+            lives--;
+            livesDisplay.innerText = lives;
+            if (lives <= 0) {
+                endGame(false);
+            } else {
+                pacman.x = 9 * TILE_SIZE + TILE_SIZE / 2;
+                pacman.y = 15 * TILE_SIZE + TILE_SIZE / 2;
+                pacman.dir = { x: 0, y: 0 };
+                pacman.nextDir = { x: 0, y: 0 };
+                ghosts.forEach(g => g.reset());
+            }
+        }
+
+        function endGame(victory) {
+            gameActive = false;
+            statusText.innerText = victory ? "VICTOIRE !" : "GAME OVER";
+            statusText.style.color = victory ? "#00ff00" : "#ff0000";
+            finalScoreDisplay.innerText = score;
+            gameOverOverlay.classList.remove('hidden');
         }
 
         function draw() {
-            // Fond (Ciel)
-            ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-            
-            // Dessiner les tuyaux
-            ctx.fillStyle = "#2ecc71";
-            pipes.forEach(p => {
-                // Tuyau haut
-                ctx.fillRect(p.x, 0, pipeWidth, p.top);
-                ctx.fillStyle = "#27ae60";
-                ctx.fillRect(p.x - 2, p.top - 20, pipeWidth + 4, 20); // Rebord
-                
-                // Tuyau bas
-                ctx.fillStyle = "#2ecc71";
-                ctx.fillRect(p.x, GAME_HEIGHT - p.bottom, pipeWidth, p.bottom);
-                ctx.fillStyle = "#27ae60";
-                ctx.fillRect(p.x - 2, GAME_HEIGHT - p.bottom, pipeWidth + 4, 20); // Rebord
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Dessiner murs
+            ctx.fillStyle = "#1e3a8a";
+            for (let y = 0; y < MAP.length; y++) {
+                for (let x = 0; x < MAP[y].length; x++) {
+                    if (MAP[y][x] === 1) {
+                        ctx.fillRect(x * TILE_SIZE + 2, y * TILE_SIZE + 2, TILE_SIZE - 4, TILE_SIZE - 4);
+                    }
+                }
+            }
+
+            // Dessiner pastilles
+            ctx.fillStyle = "#ffb8ae";
+            pellets.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x * TILE_SIZE + TILE_SIZE / 2, p.y * TILE_SIZE + TILE_SIZE / 2, 2, 0, Math.PI * 2);
+                ctx.fill();
             });
 
-            // Dessiner l'hélicoptère (Emoji/SVG style)
-            ctx.save();
-            ctx.translate(heli.x + heli.width / 2, heli.y + heli.height / 2);
-            ctx.rotate(heli.rotation);
-            
-            // Corps de l'hélico
-            ctx.font = "35px serif";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("🚁", 0, 0); 
-            
-            ctx.restore();
+            // Dessiner super pastilles
+            powerPellets.forEach(p => {
+                if (Math.floor(Date.now() / 200) % 2 === 0) {
+                    ctx.beginPath();
+                    ctx.arc(p.x * TILE_SIZE + TILE_SIZE / 2, p.y * TILE_SIZE + TILE_SIZE / 2, 6, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+
+            pacman.draw();
+            ghosts.forEach(g => g.draw());
         }
 
-        function gameLoop() {
-            if (!gameRunning) return;
-            update();
-            draw();
-            requestAnimationFrame(gameLoop);
-        }
-
-        // Premier dessin
-        draw();
+        // Dessin initial
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
     </script>
 </body>
 </html>
