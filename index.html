@@ -3,239 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Réponses Dossier Sujet - AD Débitmètre AS-355</title>
+    <title>Héli-Bird AS-355</title>
     <style>
-        :root {
-            --primary: #1e3a8a;
-            --secondary: #3b82f6;
-            --text: #1e293b;
-            --bg: #f8fafc;
-            --border: #e2e8f0;
-        }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            background-color: var(--bg);
             margin: 0;
-            padding: 40px 20px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            padding: 50px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: var(--primary);
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 10px;
-            text-align: center;
-            text-transform: uppercase;
-            font-size: 24px;
-        }
-        h2 {
-            background: var(--primary);
+            overflow: hidden;
+            background-color: #222;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             color: white;
-            padding: 10px 15px;
-            border-radius: 4px;
-            font-size: 18px;
-            margin-top: 40px;
         }
-        .question-block {
-            margin-bottom: 25px;
-            border-left: 4px solid var(--secondary);
-            padding-left: 15px;
+        #game-container {
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            border: 4px solid #444;
+            border-radius: 8px;
+            overflow: hidden;
         }
-        .question {
-            font-weight: bold;
-            color: var(--primary);
+        canvas {
             display: block;
-            margin-bottom: 5px;
+            background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
         }
-        .answer {
-            display: block;
-            text-align: justify;
-        }
-        table {
+        #ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            transition: opacity 0.3s;
         }
-        th, td {
-            border: 1px solid var(--border);
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #f1f5f9;
-            color: var(--primary);
-        }
-        .footer {
-            margin-top: 50px;
+        .menu-content {
             text-align: center;
-            font-size: 12px;
-            color: #64748b;
-            border-top: 1px solid var(--border);
-            padding-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        h1 { margin: 0 0 10px 0; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        p { font-size: 1.2rem; }
+        .btn {
+            background: #f1c40f;
+            color: #2c3e50;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background: #f39c12;
+            transform: scale(1.05);
+        }
+        #score-display {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+        .hidden { display: none !important; opacity: 0; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Fiche de Réponses : Intervention Débitmètre AS-355</h1>
 
-        <h2>Partie 1 : Analyse et étude de documentation</h2>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="score-display">0</div>
         
-        <div class="question-block">
-            <span class="question">1.1 Qu'est-ce qu'une AD ?</span>
-            <span class="answer">Une <strong>AD</strong> (Airworthiness Directive), ou Consigne de Navigabilité, est un document réglementaire impératif émis par une autorité de l'aviation pour corriger un défaut de sécurité sur un aéronef. Son application est obligatoire pour maintenir la navigabilité.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">1.2 Émetteur de cette AD :</span>
-            <span class="answer">L'<strong>EASA</strong> (European Aviation Safety Agency).</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">1.3 Différence entre AD et SB :</span>
-            <span class="answer">L'AD est un document <strong>réglementaire obligatoire</strong> émis par l'autorité. Le SB (Service Bulletin) est un document <strong>technique</strong> émis par le constructeur qui n'est facultatif que s'il n'est pas repris par une AD.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">1.4 Cause de l'émission :</span>
-            <span class="answer">Une extinction moteur incontrôlée (flame-out) due à l'obstruction du débitmètre par des particules lors du ravitaillement, car la section interne du débitmètre est plus petite que la maille de la crépine amont.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">1.5 Raisons des suppressions successives :</span>
-            <span class="answer">L'AD 2013-0205 imposait le retrait. L'AD 2015-0202 a introduit l'alternative de réinstallation avec pompe modifiée. L'AD 2016-0109R1 a ajouté les hélicoptères modifiés par le SB 28.02 (oubliés précédemment) et corrigé des erreurs de références.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">1.6 Référence du document originel :</span>
-            <span class="answer">Eurocopter Alert Service Bulletin (ASB) <strong>AS355-28.00.20</strong>.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">1.7 Délais accordés :</span>
-            <span class="answer">Sous <strong>5 mois ou 750 heures de vol</strong> (au premier terme échu).</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">1.8 Conséquence de la non-exécution :</span>
-            <span class="answer">L'interdiction de vol (clouage au sol) de l'aéronef.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">1.9 Les militaires sont-ils concernés ?</span>
-            <span class="answer">Non, cette AD concerne les modèles civils certifiés EASA. Les militaires dépendent de leurs propres autorités nationales de navigabilité.</span>
-        </div>
-
-        <h2>Partie 2 : Réglementation</h2>
-
-        <div class="question-block">
-            <span class="question">2.1 Agréments de l'entreprise :</span>
-            <span class="answer">Agrément de maintenance <strong>Part-145</strong> et agrément de gestion de navigabilité <strong>CAMO</strong> (Part-M).</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">2.2 Programmation du travail :</span>
-            <span class="answer">Lors de la prochaine visite périodique ou d'un chantier dédié avant l'échéance réglementaire.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">2.3 Document rendant l'exécution impérative :</span>
-            <span class="answer">L'<strong>Airworthiness Directive (AD)</strong>.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">2.4 Agréments atelier militaire :</span>
-            <span class="answer">Agrément <strong>FRA-145</strong>.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">2.5 Qualification pour le contrôle final :</span>
-            <span class="answer">Technicien titulaire d'une <strong>licence B1.3</strong> ou <strong>B2</strong>.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">2.6 Licence requise pour l'APRS de sortie de visite :</span>
-            <span class="answer">Licence <strong>C</strong>.</span>
-        </div>
-
-        <h2>Partie 3 : Étude technique</h2>
-
-        <div class="question-block">
-            <span class="question">3.1 Pourquoi pas un filtre plus fin à l'aspiration ?</span>
-            <span class="answer">Cela risquerait d'entraîner une perte de charge trop élevée ou une cavitation de la pompe, compromettant l'alimentation du moteur.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">3.2 Huile dans le filtre carburant (Précision) :</span>
-            <span class="answer">Il s'agit d'huile moteur chaude circulant dans un échangeur thermique pour assurer le <strong>réchauffage du carburant</strong> et éviter le givrage.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">3.3 Fonctions du débitmètre :</span>
-            <span class="answer">Mesure de la consommation instantanée, calcul de la quantité restante et détermination de l'autonomie en temps.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">3.4 Engendrement pour le pilote en cas de retrait :</span>
-            <span class="answer">Perte de l'affichage de précision de l'autonomie ; le pilote doit effectuer ses calculs manuellement via les jauges classiques.</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">3.5 Pourquoi réinstaller en 2e procédure ?</span>
-            <span class="answer">Car l'installation de la nouvelle pompe à crépine fine (P/N P94C16-620) élimine le risque d'obstruction du débitmètre, sécurisant ainsi son usage.</span>
-        </div>
-
-        <h2>Partie 4 : Étude économique</h2>
-
-        <div class="question-block">
-            <span class="question">4.1 Flotte impactée (AS-355 uniquement) :</span>
-            <table>
-                <tr>
-                    <th>Immatriculation</th>
-                    <th>Prochaine Visite</th>
-                </tr>
-                <tr><td>F-GXYZA</td><td>100 h / 500 h</td></tr>
-                <tr><td>F-GXYZC</td><td>100 h</td></tr>
-                <tr><td>F-GXYZE</td><td>100 h</td></tr>
-                <tr><td>F-GXYZF</td><td>100 h</td></tr>
-                <tr><td>F-GXYZG</td><td>100 h</td></tr>
-                <tr><td>F-GXYZJ</td><td>100 h</td></tr>
-                <tr><td>F-GXYZK</td><td>100 h</td></tr>
-                <tr><td>F-GXYZL</td><td>100 h</td></tr>
-            </table>
-        </div>
-
-        <div class="question-block">
-            <span class="question">4.2 Temps d'intervention Procédure 1 (Retrait) :</span>
-            <span class="answer">Environ <strong>0,16 h</strong> de main-d'œuvre active par appareil (dépose et neutralisation électrique).</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">4.3 Temps d'intervention Procédure 2 (Installation complète) :</span>
-            <span class="answer">Environ <strong>1,4 h</strong> de main-d'œuvre par appareil (remplacement pompes x2 et réinstallation débitmètres).</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">4.4 Temps maximal d'immobilisation :</span>
-            <span class="answer">Environ <strong>4 à 5 heures</strong> incluant les préparations, les essais d'étanchéité et la remise en service (APRS).</span>
-        </div>
-
-        <div class="question-block">
-            <span class="question">4.5 Planning de rotation :</span>
-            <span class="answer">Avec 12 hélicoptères au total et 8 requis en ligne, nous pouvons traiter <strong>4 appareils simultanément</strong> par roulement (2 groupes de 4 AS-355) pour finaliser l'AD en moins d'une semaine sans impacter l'exploitation.</span>
-        </div>
-
-        <div class="footer">
-            Examen BTS Aéronautique - Dossier Sujet : Maintenance Aéronefs - 2026
+        <div id="ui-overlay">
+            <div class="menu-content" id="start-menu">
+                <h1>Héli-Bird AS-355</h1>
+                <p>Évitez les pannes et les obstacles !</p>
+                <p>Appuyez sur <strong>ESPACE</strong> ou <strong>CLIQUEZ</strong></p>
+                <button class="btn" onclick="startGame()">DÉCOLLAGE</button>
+            </div>
+            
+            <div class="menu-content hidden" id="game-over-menu">
+                <h1>CRASH !</h1>
+                <p id="final-score">Score: 0</p>
+                <p id="best-score">Meilleur: 0</p>
+                <button class="btn" onclick="startGame()">RÉESSAYER</button>
+            </div>
         </div>
     </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score-display');
+        const uiOverlay = document.getElementById('ui-overlay');
+        const startMenu = document.getElementById('start-menu');
+        const gameOverMenu = document.getElementById('game-over-menu');
+        const finalScoreText = document.getElementById('final-score');
+        const bestScoreText = document.getElementById('best-score');
+
+        // Dimensions du jeu
+        const GAME_WIDTH = 400;
+        const GAME_HEIGHT = 600;
+        canvas.width = GAME_WIDTH;
+        canvas.height = GAME_HEIGHT;
+
+        // Paramètres du jeu
+        let gameRunning = false;
+        let score = 0;
+        let bestScore = localStorage.getItem('heliBestScore') || 0;
+
+        // L'hélicoptère (Bird)
+        const heli = {
+            x: 50,
+            y: GAME_HEIGHT / 2,
+            width: 45,
+            height: 25,
+            gravity: 0.25,
+            velocity: 0,
+            jump: -5.5,
+            rotation: 0
+        };
+
+        // Tuyaux (Obstacles)
+        let pipes = [];
+        const pipeWidth = 60;
+        const pipeGap = 160;
+        const pipeSpeed = 2.5;
+        const pipeSpacing = 220;
+
+        function createPipe() {
+            const minHeight = 50;
+            const maxHeight = GAME_HEIGHT - pipeGap - minHeight;
+            const height = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
+            
+            pipes.push({
+                x: GAME_WIDTH,
+                top: height,
+                bottom: GAME_HEIGHT - (height + pipeGap),
+                passed: false
+            });
+        }
+
+        // Contrôles
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                if (!gameRunning) {
+                    if (gameOverMenu.classList.contains('hidden')) startGame();
+                } else {
+                    jump();
+                }
+                e.preventDefault();
+            }
+        });
+
+        canvas.addEventListener('mousedown', () => {
+            if (gameRunning) jump();
+        });
+
+        function jump() {
+            heli.velocity = heli.jump;
+        }
+
+        function startGame() {
+            // Reset
+            heli.y = GAME_HEIGHT / 2;
+            heli.velocity = 0;
+            pipes = [];
+            score = 0;
+            scoreElement.innerText = score;
+            gameRunning = true;
+            
+            uiOverlay.classList.add('hidden');
+            startMenu.classList.add('hidden');
+            gameOverMenu.classList.add('hidden');
+            
+            createPipe();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            if (score > bestScore) {
+                bestScore = score;
+                localStorage.setItem('heliBestScore', bestScore);
+            }
+            
+            finalScoreText.innerText = "Score: " + score;
+            bestScoreText.innerText = "Meilleur Score: " + bestScore;
+            
+            uiOverlay.classList.remove('hidden');
+            gameOverMenu.classList.remove('hidden');
+        }
+
+        function update() {
+            if (!gameRunning) return;
+
+            // Physique de l'hélico
+            heli.velocity += heli.gravity;
+            heli.y += heli.velocity;
+            
+            // Rotation basée sur la vitesse
+            heli.rotation = Math.min(Math.PI / 4, Math.max(-Math.PI / 4, (heli.velocity * 0.1)));
+
+            // Sortie d'écran
+            if (heli.y + heli.height > GAME_HEIGHT || heli.y < 0) {
+                gameOver();
+            }
+
+            // Gestion des tuyaux
+            for (let i = pipes.length - 1; i >= 0; i--) {
+                pipes[i].x -= pipeSpeed;
+
+                // Collision
+                if (
+                    heli.x < pipes[i].x + pipeWidth &&
+                    heli.x + heli.width > pipes[i].x &&
+                    (heli.y < pipes[i].top || heli.y + heli.height > GAME_HEIGHT - pipes[i].bottom)
+                ) {
+                    gameOver();
+                }
+
+                // Score
+                if (!pipes[i].passed && pipes[i].x + pipeWidth < heli.x) {
+                    pipes[i].passed = true;
+                    score++;
+                    scoreElement.innerText = score;
+                }
+
+                // Supprimer les tuyaux hors écran
+                if (pipes[i].x + pipeWidth < 0) {
+                    pipes.splice(i, 1);
+                }
+            }
+
+            // Nouveau tuyau
+            if (pipes.length > 0 && pipes[pipes.length - 1].x < GAME_WIDTH - pipeSpacing) {
+                createPipe();
+            }
+        }
+
+        function draw() {
+            // Fond (Ciel)
+            ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+            
+            // Dessiner les tuyaux
+            ctx.fillStyle = "#2ecc71";
+            pipes.forEach(p => {
+                // Tuyau haut
+                ctx.fillRect(p.x, 0, pipeWidth, p.top);
+                ctx.fillStyle = "#27ae60";
+                ctx.fillRect(p.x - 2, p.top - 20, pipeWidth + 4, 20); // Rebord
+                
+                // Tuyau bas
+                ctx.fillStyle = "#2ecc71";
+                ctx.fillRect(p.x, GAME_HEIGHT - p.bottom, pipeWidth, p.bottom);
+                ctx.fillStyle = "#27ae60";
+                ctx.fillRect(p.x - 2, GAME_HEIGHT - p.bottom, pipeWidth + 4, 20); // Rebord
+            });
+
+            // Dessiner l'hélicoptère (Emoji/SVG style)
+            ctx.save();
+            ctx.translate(heli.x + heli.width / 2, heli.y + heli.height / 2);
+            ctx.rotate(heli.rotation);
+            
+            // Corps de l'hélico
+            ctx.font = "35px serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("🚁", 0, 0); 
+            
+            ctx.restore();
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Premier dessin
+        draw();
+    </script>
 </body>
 </html>
