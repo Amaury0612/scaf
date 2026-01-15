@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dossier Réponse - BTS AÉRONAUTIQUE - CRJ 200</title>
+    <title>Corrigé Dossier Réponse - BTS AÉRONAUTIQUE - CRJ 200</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -11,6 +11,7 @@
             --aero-red: #c0392b;
             --bg-light: #f4f7f6;
             --border-color: #bdc3c7;
+            --answer-color: #2980b9;
         }
 
         body {
@@ -70,13 +71,13 @@
             margin-bottom: 10px;
         }
 
-        textarea, input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-family: inherit;
-            box-sizing: border-box;
+        .answer-text {
+            color: var(--answer-color);
+            font-weight: 500;
+            white-space: pre-wrap;
+            border-left: 3px solid var(--answer-color);
+            padding-left: 15px;
+            margin: 10px 0;
         }
 
         table {
@@ -100,12 +101,6 @@
             margin-left: 10px;
         }
 
-        .math-input {
-            width: 80px !important;
-            text-align: center;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
         .nav-sidebar {
             position: fixed;
             left: 20px;
@@ -125,8 +120,6 @@
             margin-bottom: 8px;
         }
 
-        .nav-sidebar a:hover { color: var(--aero-red); }
-
         @media print {
             .nav-sidebar, .btn-print { display: none; }
             body { padding: 0; background: white; }
@@ -144,14 +137,13 @@
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
     </style>
 </head>
 <body>
 
     <nav class="nav-sidebar">
-        <strong>Navigation Rapide</strong>
+        <strong>Navigation Corrigé</strong>
         <hr>
         <a href="#part1">Partie 1: Validation</a>
         <a href="#part2">Partie 2: Réparation</a>
@@ -161,16 +153,16 @@
         <a href="#part6">Partie 6: Navigabilité</a>
     </nav>
 
-    <button class="btn-print" onclick="window.print()">IMPRIMER LE DOSSIER</button>
+    <button class="btn-print" onclick="window.print()">IMPRIMER LE CORRIGÉ</button>
 
     <div class="container">
         <header>
             <div class="exam-header">
-                <span>BTS AÉRONAUTIQUE</span>
+                <span>BTS AÉRONAUTIQUE - CORRIGÉ</span>
                 <span>Session 2024</span>
             </div>
             <h1>Étude de processus d'assemblage ou de maintenance</h1>
-            <p><strong>SUJET : BRAKE AND POSITION SENSOR UNIT (BPSU) - CRJ 200</strong></p>
+            <p><strong>SUJET : BPSU (BRAKE AND POSITION SENSOR UNIT) - CRJ 200</strong></p>
         </header>
 
         <section id="part1">
@@ -179,14 +171,32 @@
             <div class="question-box">
                 <span class="question-label">Question 1.1 <span class="dt-ref">(Ref DT1)</span></span>
                 <p>Donner les six "informations" (en anglais) transmises par le BPSU et citer le système de recueil :</p>
-                <textarea rows="4" placeholder="1. Position Monitoring, 2..."></textarea>
-                <p>Système de recueil : <input type="text" placeholder="Ex: FECU"></p>
+                <div class="answer-text">
+1. Position Monitoring
+2. Asymmetry
+3. Overspeed
+4. Underspeed
+5. Direction of rotation
+6. Uncommanded movement
+
+Système de recueil : Le FECU (Flap Electronic Control Unit).
+                </div>
             </div>
 
             <div class="question-box">
                 <span class="question-label">Question 1.2</span>
                 <p>Conséquences d'une dissymétrie de sortie de volet en phase critique :</p>
-                <textarea rows="3"></textarea>
+                <div class="answer-text">
+Une dissymétrie provoque un moment de roulis important et incontrôlable, pouvant entraîner une perte de contrôle de l'aéronef ou un décrochage asymétrique, particulièrement dangereux à basse altitude lors du décollage ou de l'approche finale.
+                </div>
+            </div>
+
+            <div class="question-box">
+                <span class="question-label">Question 1.3</span>
+                <p>Préconisation temporaire pertinente :</p>
+                <div class="answer-text">
+Instaurer une inspection visuelle répétitive (Daily Check ou toutes les 50 FH) du harnais électrique au niveau de la nervure WS 285.35 pour détecter tout signe précoce d'usure ou de frottement.
+                </div>
             </div>
         </section>
 
@@ -195,17 +205,27 @@
 
             <div class="question-box">
                 <span class="question-label">Question 2.2 <span class="dt-ref">(Calcul des cotes X1 et Y1)</span></span>
-                <p>Calculer les coordonnées linéaires à partir de l'entraxe de 78mm et de l'angle de 120° :</p>
-                <div style="display: flex; gap: 20px; align-items: center;">
-                    X1 = <input type="text" class="math-input" placeholder="R.sin(α)"> mm
-                    Y1 = <input type="text" class="math-input" placeholder="R.cos(α)"> mm
+                <p>Transformation de la cotation angulaire (R=39mm, 120°) en cotation linéaire :</p>
+                <div class="answer-text">
+D'après la géométrie (triangle rectangle 30/60/90) :
+X1 = R * sin(60°) = 39 * 0,866 = 33,77 mm
+Y1 = R * cos(60°) = 39 * 0,5 = 19,50 mm
                 </div>
             </div>
 
             <div class="question-box">
                 <span class="question-label">Question 2.3</span>
                 <p>Étapes du mode opératoire du ressuage :</p>
-                <textarea rows="5" placeholder="1. Nettoyage, 2. Pénétrant..."></textarea>
+                <div class="answer-text">
+1. Pré-nettoyage et séchage de la zone percée.
+2. Application du pénétrant (Type II).
+3. Temps d'imprégnation (Dwell time).
+4. Élimination de l'excès de pénétrant.
+5. Séchage.
+6. Application du révélateur.
+7. Inspection (détection de criques éventuelles).
+8. Post-nettoyage.
+                </div>
             </div>
         </section>
 
@@ -213,41 +233,49 @@
             <h2>PARTIE 4 - Analyse de la fiabilité opérationnelle</h2>
             
             <div class="question-box">
-                <p><strong>Tableau 1 : Comparaison de la fiabilité</strong></p>
+                <p><strong>Tableau 1 : Comparaison de la fiabilité (Année N-1)</strong></p>
                 <table>
                     <tr>
                         <th>Indicateur</th>
                         <th>Flotte Mondiale</th>
-                        <th>Flotte Compagnie (Calculé)</th>
+                        <th>Flotte Compagnie</th>
                     </tr>
                     <tr>
                         <td>Dispatch Reliability (DR)</td>
                         <td>99,4%</td>
-                        <td><input type="text" class="math-input" value="0.0"> %</td>
+                        <td style="color:var(--answer-color)">98,96%</td>
                     </tr>
                     <tr>
                         <td>Schedule Completion Rate (SCR)</td>
                         <td>99,6%</td>
-                        <td><input type="text" class="math-input" value="0.0"> %</td>
+                        <td style="color:var(--answer-color)">99,83%</td>
                     </tr>
                 </table>
+                <p class="dt-ref">*DR = 1 - (90/8640) | SCR = 1 - (15/8640)</p>
             </div>
 
             <div class="question-box">
-                <span class="question-label">Question 4.7 <span class="dt-ref">(Données de fiabilité)</span></span>
-                <p>Calculer MTBF et MTBUR pour les anciens BPSU :</p>
+                <span class="question-label">Question 4.7 <span class="dt-ref">(BPSU P/N: 601R93105-9)</span></span>
                 <table>
                     <tr>
-                        <th>Valeur</th>
-                        <th>Calcul / Résultat</th>
+                        <th>Indicateur</th>
+                        <th>Résultat Corrigé</th>
                     </tr>
                     <tr>
-                        <td>MTBF (Old)</td>
-                        <td><input type="text" placeholder="(FH x QPA) / Def"></td>
+                        <td>MTBF (Heures de vol)</td>
+                        <td style="color:var(--answer-color)">1188 FH</td>
+                    </tr>
+                    <tr>
+                        <td>MTBUR (Heures de vol)</td>
+                        <td style="color:var(--answer-color)">864 FH</td>
+                    </tr>
+                    <tr>
+                        <td>NFF (%)</td>
+                        <td style="color:var(--answer-color)">27,3%</td>
                     </tr>
                     <tr>
                         <td>DMC Atelier (€/FH)</td>
-                        <td><input type="text" placeholder="DMC = ..."></td>
+                        <td style="color:var(--answer-color)">7,11 €/FH</td>
                     </tr>
                 </table>
             </div>
@@ -258,41 +286,22 @@
 
             <div class="question-box">
                 <span class="question-label">Question 5.1</span>
-                <p>Nombre de Check A à prévoir pour le MSN 7501 pour l'année N :</p>
-                <input type="text" style="width: 200px;">
-                <p>Faut-il envisager une Check C ? <input type="text" style="width: 100px;"></p>
+                <div class="answer-text">
+Nombre de Check A à prévoir (MSN 7501) : 3 visites.
+(Basé sur ~1584 FH annuels / 500 FH par Check A).
+
+Check C : Non nécessaire. 
+L'avion a 28 392 FH. Le prochain Check C est à 30 000 FH (tous les 10 Check A soit 5000 FH, dernier à 25 000 FH).
+                </div>
             </div>
 
             <div class="question-box">
-                <span class="question-label">Question 5.4 - Planning Night Stop</span>
-                <p>Répartition de la vacation de 9h (DR3) :</p>
-                <table style="font-size: 0.8em;">
-                    <tr>
-                        <th>Heure</th>
-                        <th>MEC 1</th>
-                        <th>MEC 2</th>
-                        <th>AVIO</th>
-                        <th>CEQ</th>
-                    </tr>
-                    <tr>
-                        <td>21:00 - 23:00</td>
-                        <td><input type="text"></td>
-                        <td><input type="text"></td>
-                        <td><input type="text"></td>
-                        <td>Supervision</td>
-                    </tr>
-                    <tr>
-                        <td>00:00 - 01:00</td>
-                        <td colspan="4" style="background: #eee;">REPAS</td>
-                    </tr>
-                    <tr>
-                        <td>...</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </table>
+                <span class="question-label">Question 5.3 - Moyens Humains</span>
+                <div class="answer-text">
+Pour réaliser les SB 113 et 122 en une vacation de 8h utiles :
+Il faut 2 techniciens (MEC) travaillant en parallèle sur chaque aile (total 4 MEC). 
+Le CEQ assure la coordination et le CTL valide l'inspection finale et le ressuage.
+                </div>
             </div>
         </section>
 
@@ -300,36 +309,27 @@
             <h2>PARTIE 6 - Suivi de navigabilité</h2>
             
             <div class="question-box">
-                <span class="question-label">Question 6.2 <span class="dt-ref">(Masse et Centrage)</span></span>
-                <p>Calcul du nouveau centre de gravité après installation (+1.36 kg à 15.24 m) :</p>
-                <textarea rows="4" placeholder="Détail du calcul du nouveau moment..."></textarea>
+                <span class="question-label">Question 6.1</span>
+                <p>Documents concernés par le Close-Out :</p>
+                <div class="answer-text">
+1. Weight and Balance Manual (WBM).
+2. Aircraft Logbooks (Livret aéronef).
+3. Configuration management system (Suivi de navigabilité/PN).
+                </div>
             </div>
 
             <div class="question-box">
-                <span class="question-label">Question 6.5 - Communication</span>
-                <p>Compléter le fax de conformité (DR5) :</p>
-                <div style="border: 1px dashed black; padding: 15px;">
-                    <p>TO: BOMBARDIER AEROSPACE</p>
-                    <p>SB NUMBER: <input type="text" value="601R-27-122" style="width: 150px;"></p>
-                    <p>AIRCRAFT SERIAL NUMBER: <input type="text" style="width: 150px;"></p>
-                    <p>DATE OF INCORPORATION: <input type="text" style="width: 150px;"></p>
+                <span class="question-label">Question 6.3</span>
+                <p>Justification de la pesée :</p>
+                <div class="answer-text">
+Une pesée n'est pas réglementairement obligatoire ici car la modification de masse (+1.36 kg) représente moins de 0.007% de la masse maximale à l'atterrissage (loin du seuil de 0.5% fixé par le règlement EU 965/2012). L'ajustement par calcul est suffisant.
                 </div>
             </div>
         </section>
 
         <footer style="margin-top: 50px; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px;">
-            <p class="mono" style="font-size: 0.8em;">DOSSIER RÉPONSE - CRJ 200 - BPSU MODIFICATION - PROJET PÉDAGOGIQUE</p>
+            <p class="mono" style="font-size: 0.8em;">CORRIGÉ TECHNIQUE - PROJET PÉDAGOGIQUE BTS AÉRO</p>
         </footer>
     </div>
-
-    <script>
-        // Logique optionnelle pour calcul automatique si besoin
-        console.log("Dossier Réponse Initialisé.");
-        
-        // Exemple : Calculatrice simplifiée pour les coûts
-        function calculateDMC() {
-            // Logique de calcul basée sur DT7
-        }
-    </script>
 </body>
 </html>
