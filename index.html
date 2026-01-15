@@ -3,433 +3,333 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pac-Man Retro</title>
+    <title>Dossier Réponse - BTS AÉRONAUTIQUE - CRJ 200</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --aero-blue: #2c3e50;
+            --aero-red: #c0392b;
+            --bg-light: #f4f7f6;
+            --border-color: #bdc3c7;
+        }
+
         body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-light);
             margin: 0;
-            background-color: #111;
-            color: white;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
         }
-        #game-container {
-            position: relative;
-            border: 4px solid #222;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
         }
-        canvas {
-            display: block;
-            background-color: black;
+
+        header {
+            text-align: center;
+            border-bottom: 3px double var(--aero-blue);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
         }
-        #ui {
-            width: 100%;
-            max-width: 400px;
+
+        .exam-header {
             display: flex;
             justify-content: space-between;
-            padding: 10px;
-            font-size: 20px;
-            text-transform: uppercase;
-        }
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-        .hidden { display: none; }
-        h1 { color: #ffff00; text-shadow: 2px 2px #ff0000; margin: 0; }
-        button {
-            background: #ffff00;
-            border: none;
-            padding: 10px 20px;
-            font-size: 18px;
             font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-            font-family: inherit;
+            font-size: 0.9em;
+            margin-bottom: 10px;
         }
-        button:hover { background: #fff; }
+
+        h1 { color: var(--aero-blue); text-transform: uppercase; margin: 10px 0; }
+        h2 { 
+            background: var(--aero-blue); 
+            color: white; 
+            padding: 10px; 
+            font-size: 1.2em; 
+            margin-top: 40px;
+            border-left: 10px solid var(--aero-red);
+        }
+
+        .question-box {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #eee;
+            background: #fafafa;
+        }
+
+        .question-label {
+            font-weight: bold;
+            color: var(--aero-red);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: center;
+        }
+
+        th { background: #ecf0f1; color: var(--aero-blue); }
+
+        .dt-ref {
+            font-size: 0.8em;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-left: 10px;
+        }
+
+        .math-input {
+            width: 80px !important;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-sidebar {
+            position: fixed;
+            left: 20px;
+            top: 100px;
+            width: 200px;
+            background: white;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-sidebar a {
+            display: block;
+            text-decoration: none;
+            color: var(--aero-blue);
+            font-size: 0.85em;
+            margin-bottom: 8px;
+        }
+
+        .nav-sidebar a:hover { color: var(--aero-red); }
+
+        @media print {
+            .nav-sidebar, .btn-print { display: none; }
+            body { padding: 0; background: white; }
+            .container { box-shadow: none; border: none; width: 100%; }
+        }
+
+        .btn-print {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: var(--aero-red);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
 
-    <div id="ui">
-        <div>Score: <span id="score">0</span></div>
-        <div>Vies: <span id="lives">3</span></div>
-    </div>
+    <nav class="nav-sidebar">
+        <strong>Navigation Rapide</strong>
+        <hr>
+        <a href="#part1">Partie 1: Validation</a>
+        <a href="#part2">Partie 2: Réparation</a>
+        <a href="#part3">Partie 3: Processus</a>
+        <a href="#part4">Partie 4: Fiabilité/Coûts</a>
+        <a href="#part5">Partie 5: Planning</a>
+        <a href="#part6">Partie 6: Navigabilité</a>
+    </nav>
 
-    <div id="game-container">
-        <canvas id="pacmanCanvas"></canvas>
-        
-        <div id="start-overlay" class="overlay">
-            <h1>PAC-MAN</h1>
-            <p>Utilisez les flèches pour bouger</p>
-            <button onclick="initGame()">COMMENCER</button>
-        </div>
+    <button class="btn-print" onclick="window.print()">IMPRIMER LE DOSSIER</button>
 
-        <div id="game-over-overlay" class="overlay hidden">
-            <h1 id="status-text">GAME OVER</h1>
-            <p>Score final: <span id="final-score">0</span></p>
-            <button onclick="initGame()">REJOUER</button>
-        </div>
+    <div class="container">
+        <header>
+            <div class="exam-header">
+                <span>BTS AÉRONAUTIQUE</span>
+                <span>Session 2024</span>
+            </div>
+            <h1>Étude de processus d'assemblage ou de maintenance</h1>
+            <p><strong>SUJET : BRAKE AND POSITION SENSOR UNIT (BPSU) - CRJ 200</strong></p>
+        </header>
+
+        <section id="part1">
+            <h2>PARTIE 1 - Validation du besoin de réparation</h2>
+            
+            <div class="question-box">
+                <span class="question-label">Question 1.1 <span class="dt-ref">(Ref DT1)</span></span>
+                <p>Donner les six "informations" (en anglais) transmises par le BPSU et citer le système de recueil :</p>
+                <textarea rows="4" placeholder="1. Position Monitoring, 2..."></textarea>
+                <p>Système de recueil : <input type="text" placeholder="Ex: FECU"></p>
+            </div>
+
+            <div class="question-box">
+                <span class="question-label">Question 1.2</span>
+                <p>Conséquences d'une dissymétrie de sortie de volet en phase critique :</p>
+                <textarea rows="3"></textarea>
+            </div>
+        </section>
+
+        <section id="part2">
+            <h2>PARTIE 2 - Proposition d'une réparation</h2>
+
+            <div class="question-box">
+                <span class="question-label">Question 2.2 <span class="dt-ref">(Calcul des cotes X1 et Y1)</span></span>
+                <p>Calculer les coordonnées linéaires à partir de l'entraxe de 78mm et de l'angle de 120° :</p>
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    X1 = <input type="text" class="math-input" placeholder="R.sin(α)"> mm
+                    Y1 = <input type="text" class="math-input" placeholder="R.cos(α)"> mm
+                </div>
+            </div>
+
+            <div class="question-box">
+                <span class="question-label">Question 2.3</span>
+                <p>Étapes du mode opératoire du ressuage :</p>
+                <textarea rows="5" placeholder="1. Nettoyage, 2. Pénétrant..."></textarea>
+            </div>
+        </section>
+
+        <section id="part4">
+            <h2>PARTIE 4 - Analyse de la fiabilité opérationnelle</h2>
+            
+            <div class="question-box">
+                <p><strong>Tableau 1 : Comparaison de la fiabilité</strong></p>
+                <table>
+                    <tr>
+                        <th>Indicateur</th>
+                        <th>Flotte Mondiale</th>
+                        <th>Flotte Compagnie (Calculé)</th>
+                    </tr>
+                    <tr>
+                        <td>Dispatch Reliability (DR)</td>
+                        <td>99,4%</td>
+                        <td><input type="text" class="math-input" value="0.0"> %</td>
+                    </tr>
+                    <tr>
+                        <td>Schedule Completion Rate (SCR)</td>
+                        <td>99,6%</td>
+                        <td><input type="text" class="math-input" value="0.0"> %</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="question-box">
+                <span class="question-label">Question 4.7 <span class="dt-ref">(Données de fiabilité)</span></span>
+                <p>Calculer MTBF et MTBUR pour les anciens BPSU :</p>
+                <table>
+                    <tr>
+                        <th>Valeur</th>
+                        <th>Calcul / Résultat</th>
+                    </tr>
+                    <tr>
+                        <td>MTBF (Old)</td>
+                        <td><input type="text" placeholder="(FH x QPA) / Def"></td>
+                    </tr>
+                    <tr>
+                        <td>DMC Atelier (€/FH)</td>
+                        <td><input type="text" placeholder="DMC = ..."></td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section id="part5">
+            <h2>PARTIE 5 - Application du SB sur la flotte</h2>
+
+            <div class="question-box">
+                <span class="question-label">Question 5.1</span>
+                <p>Nombre de Check A à prévoir pour le MSN 7501 pour l'année N :</p>
+                <input type="text" style="width: 200px;">
+                <p>Faut-il envisager une Check C ? <input type="text" style="width: 100px;"></p>
+            </div>
+
+            <div class="question-box">
+                <span class="question-label">Question 5.4 - Planning Night Stop</span>
+                <p>Répartition de la vacation de 9h (DR3) :</p>
+                <table style="font-size: 0.8em;">
+                    <tr>
+                        <th>Heure</th>
+                        <th>MEC 1</th>
+                        <th>MEC 2</th>
+                        <th>AVIO</th>
+                        <th>CEQ</th>
+                    </tr>
+                    <tr>
+                        <td>21:00 - 23:00</td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td>Supervision</td>
+                    </tr>
+                    <tr>
+                        <td>00:00 - 01:00</td>
+                        <td colspan="4" style="background: #eee;">REPAS</td>
+                    </tr>
+                    <tr>
+                        <td>...</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section id="part6">
+            <h2>PARTIE 6 - Suivi de navigabilité</h2>
+            
+            <div class="question-box">
+                <span class="question-label">Question 6.2 <span class="dt-ref">(Masse et Centrage)</span></span>
+                <p>Calcul du nouveau centre de gravité après installation (+1.36 kg à 15.24 m) :</p>
+                <textarea rows="4" placeholder="Détail du calcul du nouveau moment..."></textarea>
+            </div>
+
+            <div class="question-box">
+                <span class="question-label">Question 6.5 - Communication</span>
+                <p>Compléter le fax de conformité (DR5) :</p>
+                <div style="border: 1px dashed black; padding: 15px;">
+                    <p>TO: BOMBARDIER AEROSPACE</p>
+                    <p>SB NUMBER: <input type="text" value="601R-27-122" style="width: 150px;"></p>
+                    <p>AIRCRAFT SERIAL NUMBER: <input type="text" style="width: 150px;"></p>
+                    <p>DATE OF INCORPORATION: <input type="text" style="width: 150px;"></p>
+                </div>
+            </div>
+        </section>
+
+        <footer style="margin-top: 50px; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px;">
+            <p class="mono" style="font-size: 0.8em;">DOSSIER RÉPONSE - CRJ 200 - BPSU MODIFICATION - PROJET PÉDAGOGIQUE</p>
+        </footer>
     </div>
 
     <script>
-        const canvas = document.getElementById('pacmanCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreDisplay = document.getElementById('score');
-        const livesDisplay = document.getElementById('lives');
-        const startOverlay = document.getElementById('start-overlay');
-        const gameOverOverlay = document.getElementById('game-over-overlay');
-        const statusText = document.getElementById('status-text');
-        const finalScoreDisplay = document.getElementById('final-score');
-
-        const TILE_SIZE = 20;
-        const MAP = [
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
-            [1,2,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,2,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1],
-            [1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1],
-            [1,1,1,1,0,1,1,1,3,1,3,1,1,1,0,1,1,1,1],
-            [3,3,3,1,0,1,3,3,3,3,3,3,3,1,0,1,3,3,3],
-            [1,1,1,1,0,1,3,1,1,4,1,1,3,1,0,1,1,1,1],
-            [3,3,3,3,0,3,3,1,3,3,3,1,3,3,0,3,3,3,3],
-            [1,1,1,1,0,1,3,1,1,1,1,1,3,1,0,1,1,1,1],
-            [3,3,3,1,0,1,3,3,3,3,3,3,3,1,0,1,3,3,3],
-            [1,1,1,1,0,1,3,1,1,1,1,1,3,1,0,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
-            [1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1],
-            [1,2,0,1,0,0,0,0,0,3,0,0,0,0,0,1,0,2,1],
-            [1,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1],
-            [1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1],
-            [1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-        ];
-
-        // Légende Map: 1: Mur, 0: Point, 2: Super Point, 3: Vide, 4: Porte fantômes
-
-        canvas.width = MAP[0].length * TILE_SIZE;
-        canvas.height = MAP.length * TILE_SIZE;
-
-        let pacman, ghosts, pellets, powerPellets, score, lives, gameActive, powerModeTimer;
-
-        class Entity {
-            constructor(x, y, color) {
-                this.gridX = x;
-                this.gridY = y;
-                this.x = x * TILE_SIZE + TILE_SIZE / 2;
-                this.y = y * TILE_SIZE + TILE_SIZE / 2;
-                this.color = color;
-                this.dir = { x: 0, y: 0 };
-                this.nextDir = { x: 0, y: 0 };
-                this.speed = 2;
-            }
-
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, TILE_SIZE / 2 - 2, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            updatePosition() {
-                // Tentative de changement de direction au centre d'une case
-                if (this.x % TILE_SIZE === TILE_SIZE / 2 && this.y % TILE_SIZE === TILE_SIZE / 2) {
-                    const currentGridX = Math.floor(this.x / TILE_SIZE);
-                    const currentGridY = Math.floor(this.y / TILE_SIZE);
-
-                    // Vérifier si le virage souhaité est possible
-                    if (this.canMove(this.nextDir.x, this.nextDir.y)) {
-                        this.dir = { ...this.nextDir };
-                    }
-
-                    // Arrêt si mur devant
-                    if (!this.canMove(this.dir.x, this.dir.y)) {
-                        this.dir = { x: 0, y: 0 };
-                    }
-                }
-
-                this.x += this.dir.x * this.speed;
-                this.y += this.dir.y * this.speed;
-
-                // Téléportation bords
-                if (this.x < 0) this.x = canvas.width;
-                if (this.x > canvas.width) this.x = 0;
-            }
-
-            canMove(dx, dy) {
-                if (dx === 0 && dy === 0) return true;
-                const nextX = Math.floor(this.x / TILE_SIZE) + dx;
-                const nextY = Math.floor(this.y / TILE_SIZE) + dy;
-                
-                // Gestion tunnel
-                if (nextX < 0 || nextX >= MAP[0].length) return true;
-
-                return MAP[nextY][nextX] !== 1;
-            }
+        // Logique optionnelle pour calcul automatique si besoin
+        console.log("Dossier Réponse Initialisé.");
+        
+        // Exemple : Calculatrice simplifiée pour les coûts
+        function calculateDMC() {
+            // Logique de calcul basée sur DT7
         }
-
-        class Pacman extends Entity {
-            constructor(x, y) {
-                super(x, y, "#ffff00");
-                this.mouthOpen = 0;
-                this.mouthSpeed = 0.15;
-            }
-
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                let angle = 0;
-                if (this.dir.x === 1) angle = 0;
-                else if (this.dir.x === -1) angle = Math.PI;
-                else if (this.dir.y === 1) angle = Math.PI / 2;
-                else if (this.dir.y === -1) angle = -Math.PI / 2;
-
-                this.mouthOpen += this.mouthSpeed;
-                const open = (Math.sin(this.mouthOpen) + 1) * 0.2;
-
-                ctx.moveTo(this.x, this.y);
-                ctx.arc(this.x, this.y, TILE_SIZE / 2 - 1, angle + open, angle + Math.PI * 2 - open);
-                ctx.lineTo(this.x, this.y);
-                ctx.fill();
-            }
-        }
-
-        class Ghost extends Entity {
-            constructor(x, y, color) {
-                super(x, y, color);
-                this.isFrightened = false;
-                this.baseColor = color;
-                this.speed = 1.5;
-            }
-
-            draw() {
-                ctx.fillStyle = this.isFrightened ? "#0000ff" : this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y - 2, TILE_SIZE / 2 - 2, Math.PI, 0);
-                ctx.lineTo(this.x + (TILE_SIZE / 2 - 2), this.y + (TILE_SIZE / 2 - 2));
-                ctx.lineTo(this.x - (TILE_SIZE / 2 - 2), this.y + (TILE_SIZE / 2 - 2));
-                ctx.fill();
-                
-                // Yeux
-                ctx.fillStyle = "white";
-                ctx.beginPath();
-                ctx.arc(this.x - 4, this.y - 4, 3, 0, Math.PI * 2);
-                ctx.arc(this.x + 4, this.y - 4, 3, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            moveRandomly() {
-                if (this.x % TILE_SIZE === TILE_SIZE / 2 && this.y % TILE_SIZE === TILE_SIZE / 2) {
-                    const directions = [
-                        { x: 1, y: 0 }, { x: -1, y: 0 },
-                        { x: 0, y: 1 }, { x: 0, y: -1 }
-                    ];
-                    
-                    // Priorité à continuer tout droit ou tourner, éviter demi-tour immédiat
-                    const validDirs = directions.filter(d => 
-                        this.canMove(d.x, d.y) && (d.x !== -this.dir.x || d.y !== -this.dir.y)
-                    );
-
-                    if (validDirs.length > 0) {
-                        this.dir = validDirs[Math.floor(Math.random() * validDirs.length)];
-                    } else {
-                        // Cul de sac: demi-tour
-                        this.dir = { x: -this.dir.x, y: -this.dir.y };
-                    }
-                }
-                this.x += this.dir.x * this.speed;
-                this.y += this.dir.y * this.speed;
-                
-                if (this.x < 0) this.x = canvas.width;
-                if (this.x > canvas.width) this.x = 0;
-            }
-
-            reset() {
-                this.x = this.gridX * TILE_SIZE + TILE_SIZE / 2;
-                this.y = this.gridY * TILE_SIZE + TILE_SIZE / 2;
-                this.isFrightened = false;
-                this.dir = { x: 0, y: 0 };
-            }
-        }
-
-        function initGame() {
-            score = 0;
-            lives = 3;
-            gameActive = true;
-            powerModeTimer = 0;
-            pellets = [];
-            powerPellets = [];
-            
-            scoreDisplay.innerText = score;
-            livesDisplay.innerText = lives;
-            startOverlay.classList.add('hidden');
-            gameOverOverlay.classList.add('hidden');
-
-            pacman = new Pacman(9, 15);
-            ghosts = [
-                new Ghost(9, 9, "#ff0000"), // Blinky
-                new Ghost(8, 9, "#ffb8ff"), // Pinky
-                new Ghost(10, 9, "#00ffff"), // Inky
-                new Ghost(9, 8, "#ffb852")  // Clyde
-            ];
-
-            // Remplir les pastilles
-            for (let y = 0; y < MAP.length; y++) {
-                for (let x = 0; x < MAP[y].length; x++) {
-                    if (MAP[y][x] === 0) pellets.push({ x, y });
-                    else if (MAP[y][x] === 2) powerPellets.push({ x, y });
-                }
-            }
-
-            requestAnimationFrame(update);
-        }
-
-        window.addEventListener('keydown', (e) => {
-            if (!gameActive) return;
-            switch(e.key) {
-                case 'ArrowUp': pacman.nextDir = { x: 0, y: -1 }; break;
-                case 'ArrowDown': pacman.nextDir = { x: 0, y: 1 }; break;
-                case 'ArrowLeft': pacman.nextDir = { x: -1, y: 0 }; break;
-                case 'ArrowRight': pacman.nextDir = { x: 1, y: 0 }; break;
-            }
-        });
-
-        function update() {
-            if (!gameActive) return;
-
-            pacman.updatePosition();
-
-            // Collision pastilles
-            const gx = Math.floor(pacman.x / TILE_SIZE);
-            const gy = Math.floor(pacman.y / TILE_SIZE);
-
-            const pelletIndex = pellets.findIndex(p => p.x === gx && p.y === gy);
-            if (pelletIndex !== -1) {
-                pellets.splice(pelletIndex, 1);
-                score += 10;
-                scoreDisplay.innerText = score;
-                if (pellets.length === 0 && powerPellets.length === 0) {
-                    endGame(true);
-                }
-            }
-
-            const powerIndex = powerPellets.findIndex(p => p.x === gx && p.y === gy);
-            if (powerIndex !== -1) {
-                powerPellets.splice(powerIndex, 1);
-                score += 50;
-                scoreDisplay.innerText = score;
-                activatePowerMode();
-            }
-
-            // Gestion fantômes
-            ghosts.forEach(ghost => {
-                ghost.moveRandomly();
-
-                // Collision Pac-Man / Fantôme
-                const dist = Math.hypot(pacman.x - ghost.x, pacman.y - ghost.y);
-                if (dist < TILE_SIZE - 5) {
-                    if (ghost.isFrightened) {
-                        ghost.reset();
-                        score += 200;
-                        scoreDisplay.innerText = score;
-                    } else {
-                        die();
-                    }
-                }
-            });
-
-            if (powerModeTimer > 0) {
-                powerModeTimer--;
-                if (powerModeTimer === 0) {
-                    ghosts.forEach(g => g.isFrightened = false);
-                }
-            }
-
-            draw();
-            requestAnimationFrame(update);
-        }
-
-        function activatePowerMode() {
-            powerModeTimer = 400; // ~7 secondes à 60fps
-            ghosts.forEach(g => g.isFrightened = true);
-        }
-
-        function die() {
-            lives--;
-            livesDisplay.innerText = lives;
-            if (lives <= 0) {
-                endGame(false);
-            } else {
-                pacman.x = 9 * TILE_SIZE + TILE_SIZE / 2;
-                pacman.y = 15 * TILE_SIZE + TILE_SIZE / 2;
-                pacman.dir = { x: 0, y: 0 };
-                pacman.nextDir = { x: 0, y: 0 };
-                ghosts.forEach(g => g.reset());
-            }
-        }
-
-        function endGame(victory) {
-            gameActive = false;
-            statusText.innerText = victory ? "VICTOIRE !" : "GAME OVER";
-            statusText.style.color = victory ? "#00ff00" : "#ff0000";
-            finalScoreDisplay.innerText = score;
-            gameOverOverlay.classList.remove('hidden');
-        }
-
-        function draw() {
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Dessiner murs
-            ctx.fillStyle = "#1e3a8a";
-            for (let y = 0; y < MAP.length; y++) {
-                for (let x = 0; x < MAP[y].length; x++) {
-                    if (MAP[y][x] === 1) {
-                        ctx.fillRect(x * TILE_SIZE + 2, y * TILE_SIZE + 2, TILE_SIZE - 4, TILE_SIZE - 4);
-                    }
-                }
-            }
-
-            // Dessiner pastilles
-            ctx.fillStyle = "#ffb8ae";
-            pellets.forEach(p => {
-                ctx.beginPath();
-                ctx.arc(p.x * TILE_SIZE + TILE_SIZE / 2, p.y * TILE_SIZE + TILE_SIZE / 2, 2, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            // Dessiner super pastilles
-            powerPellets.forEach(p => {
-                if (Math.floor(Date.now() / 200) % 2 === 0) {
-                    ctx.beginPath();
-                    ctx.arc(p.x * TILE_SIZE + TILE_SIZE / 2, p.y * TILE_SIZE + TILE_SIZE / 2, 6, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            });
-
-            pacman.draw();
-            ghosts.forEach(g => g.draw());
-        }
-
-        // Dessin initial
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
     </script>
 </body>
 </html>
