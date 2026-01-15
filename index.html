@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corrigé Complet - Dossier Réponse CRJ 200</title>
+    <title>Corrigé Intégral - Dossier Réponse CRJ 200</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -21,16 +21,16 @@
             margin: 0;
             padding: 40px 20px;
             color: #2c3e50;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .container {
-            max-width: 950px;
+            max-width: 1000px;
             margin: 0 auto;
             background: var(--bg-light);
-            padding: 60px;
+            padding: 50px;
             box-shadow: 0 0 30px rgba(0,0,0,0.05);
-            border-top: 5px solid var(--aero-red);
+            border-top: 6px solid var(--aero-red);
         }
 
         header {
@@ -49,72 +49,65 @@
             color: #7f8c8d;
         }
 
-        h1 { font-size: 2em; margin: 15px 0; color: var(--aero-blue); }
+        h1 { font-size: 1.8em; margin: 15px 0; color: var(--aero-blue); }
         h2 { 
-            background: #f8f9f9;
-            color: var(--aero-blue);
-            padding: 12px 20px;
-            font-size: 1.3em;
-            margin-top: 50px;
-            border-left: 5px solid var(--aero-red);
+            background: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            margin-top: 40px;
+            border-left: 8px solid var(--aero-red);
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .question-block {
-            margin: 25px 0;
+            margin: 20px 0;
             border: 1px solid var(--border-color);
             border-radius: 4px;
-            overflow: hidden;
         }
 
         .q-header {
             background: #fdf2f2;
-            padding: 10px 20px;
+            padding: 8px 15px;
             font-weight: bold;
-            font-size: 0.95em;
+            font-size: 0.9em;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
         }
 
-        .q-ref { color: var(--aero-red); }
+        .q-text { padding: 10px 15px; background: #fff; font-style: italic; font-size: 0.9em; border-bottom: 1px dashed #eee; }
 
         .answer-content {
-            padding: 20px;
+            padding: 15px;
             background: var(--answer-bg);
             color: var(--highlight);
             font-weight: 500;
+            white-space: pre-line;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 0.9em;
+            margin: 10px 0;
+            font-size: 0.85em;
         }
 
         th, td {
             border: 1px solid var(--border-color);
-            padding: 12px;
+            padding: 8px;
             text-align: center;
         }
 
         th { background: #f4f6f7; color: var(--aero-blue); }
 
-        .schematic {
-            text-align: center;
-            margin: 20px 0;
-            padding: 20px;
-            background: #fff;
-            border: 1px dashed #ccc;
-        }
-
         .result-box {
             display: inline-block;
-            padding: 5px 15px;
-            border-bottom: 2px solid var(--highlight);
+            padding: 2px 10px;
+            background: #ebf5fb;
+            border-radius: 3px;
             font-family: 'JetBrains Mono', monospace;
+            font-weight: bold;
         }
 
         .btn-print {
@@ -128,29 +121,27 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            box-shadow: 0 5px 15px rgba(169, 50, 38, 0.3);
             z-index: 100;
         }
 
         @media print {
             .btn-print { display: none; }
             body { background: white; padding: 0; }
-            .container { box-shadow: none; border: none; width: 100%; padding: 20px; }
+            .container { box-shadow: none; border: none; width: 100%; padding: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <button class="btn-print" onclick="window.print()">IMPRIMER LE DOSSIER</button>
+    <button class="btn-print" onclick="window.print()">IMPRIMER LE CORRIGÉ COMPLET</button>
 
     <div class="container">
         <header>
             <div class="header-top">
-                <span>BTS AÉRONAUTIQUE - E3</span>
+                <span>BTS AÉRONAUTIQUE - DOSSIER RÉPONSE CORRIGÉ</span>
                 <span>Session 2024</span>
             </div>
-            <h1>Étude de processus de maintenance</h1>
-            <p><strong>Dossier Corrigé : Brake and Position Sensor Unit (BPSU) - Bombardier CRJ 200</strong></p>
+            <h1>Maintenance des Processus : BPSU CRJ-200</h1>
         </header>
 
         <!-- PARTIE 1 -->
@@ -158,18 +149,33 @@
             <h2>Partie 1 : Validation du besoin de réparation</h2>
             
             <div class="question-block">
-                <div class="q-header"><span class="q-ref">Question 1.1</span> <span>(Données BPSU)</span></div>
+                <div class="q-header">Question 1.1 (DT1)</div>
+                <div class="q-text">Donner les six informations transmises par le BPSU et le système de recueil.</div>
                 <div class="answer-content">
-                    Les six informations transmises par le BPSU sont : 
-                    <em>1. Position Monitoring, 2. Asymmetry, 3. Overspeed, 4. Underspeed, 5. Direction of rotation, 6. Uncommanded movement.</em><br><br>
-                    Le système qui recueille ces données est le <strong>FECU (Flap Electronic Control Unit)</strong>.
+                    1. Position monitoring
+                    2. Asymmetry
+                    3. Overspeed
+                    4. Underspeed
+                    5. Direction of rotation
+                    6. Uncommanded movement
+                    
+                    Système de recueil : <strong>FECU (Flap Electronic Control Unit)</strong>.
                 </div>
             </div>
 
             <div class="question-block">
-                <div class="q-header"><span class="q-ref">Question 1.2</span> <span>(Sécurité)</span></div>
+                <div class="q-header">Question 1.2</div>
+                <div class="q-text">Conséquences d'une dissymétrie de sortie de volet.</div>
                 <div class="answer-content">
-                    Une dissymétrie de sortie des volets en phase critique (décollage/approche) génère un déséquilibre de portance entre les deux ailes, provoquant un moment de roulis violent. Sans action immédiate, cela conduit au décrochage d'une aile et à la perte de contrôle de l'aéronef.
+                    Apparition d'un couple de roulis important dû à la différence de portance entre les ailes. Risque de perte de contrôle directionnel et décrochage asymétrique lors du décollage ou de l'approche (basse altitude).
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="q-header">Question 1.3</div>
+                <div class="q-text">Préconisation temporaire.</div>
+                <div class="answer-content">
+                    Mettre en place une inspection visuelle détaillée (Detailed Inspection) du harnais électrique du BPSU à chaque visite de type "Daily Check" ou toutes les 50 FH pour détecter d'éventuelles traces de frottement (shaffing) sur la nervure WS 285.35.
                 </div>
             </div>
         </section>
@@ -179,31 +185,61 @@
             <h2>Partie 2 : Proposition d'une réparation</h2>
 
             <div class="question-block">
-                <div class="q-header"><span class="q-ref">Question 2.1</span> <span>(Solution de Mise en Position - MIP)</span></div>
+                <div class="q-header">Question 2.1 (DT2)</div>
+                <div class="q-text">Décrire la solution de mise en position (MIP) du canon de perçage.</div>
                 <div class="answer-content">
-                    La solution proposée dans le Service Bulletin (SB) pour garantir la MIP du <strong>drill jig (DJIG)</strong> consiste à utiliser les 3 trous de fixation existants du BPSU sur la nervure. <br><br>
-                    Le canon est centré à l'aide d'un <strong>alignment tool (4)</strong> engagé dans le trou pilote de 0,625 pouce. Le technicien doit ensuite aligner le repère de l'outil avec celui du gabarit avant de serrer les écrous manuellement pour garantir un perçage parfaitement concentrique.
+                    Le gabarit (Drill Jig) est fixé sur la nervure en utilisant les 3 trous de fixation du BPSU. Un <strong>alignment tool (4)</strong> est inséré dans le guide du canon de perçage et engagé dans le trou existant de 0,625 pouce pour garantir la concentricité. On aligne les repères visuels sur l'outil et le gabarit avant le serrage final des écrous.
                 </div>
             </div>
 
             <div class="question-block">
-                <div class="q-header"><span class="q-ref">Question 2.2</span> <span>(Calcul de cotation linéaire)</span></div>
-                <div class="schematic">
-                    <svg width="200" height="200" viewBox="0 0 200 200">
-                        <circle cx="100" cy="100" r="78" fill="none" stroke="#ccc" stroke-dasharray="4"/>
-                        <circle cx="100" cy="100" r="3" fill="#000"/>
-                        <line x1="100" y1="100" x2="167" y2="61" stroke="red" stroke-width="2"/>
-                        <text x="110" y="80" font-size="12" fill="red">R = 39mm</text>
-                        <circle cx="167" cy="61" r="5" fill="blue"/>
-                        <path d="M 100 22 A 78 78 0 0 1 167 61" fill="none" stroke="blue" stroke-width="1"/>
-                        <text x="130" y="40" font-size="10" fill="blue">120°</text>
-                    </svg>
-                    <p style="font-size: 0.8em; color: #666;">Schéma de principe : Passage de la cotation angulaire à linéaire (X1, Y1)</p>
-                </div>
+                <div class="q-header">Question 2.2</div>
+                <div class="q-text">Calcul des cotes X1 et Y1 du gabarit.</div>
                 <div class="answer-content">
-                    Considérant un rayon de 39 mm (diamètre 78 mm) et un angle de 120° (soit 30° par rapport à l'horizontale pour le trou supérieur) :<br>
-                    <span class="result-box">X1 = 39 × sin(60°) = 33,77 mm</span><br>
-                    <span class="result-box">Y1 = 39 × cos(60°) = 19,50 mm</span>
+                    Le diamètre est de 78 mm, soit un rayon R = 39 mm. L'angle entre les trous est de 120°.
+                    X1 = 39 × sin(60°) = <span class="result-box">33,77 mm</span>
+                    Y1 = 39 × cos(60°) = <span class="result-box">19,50 mm</span>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="q-header">Question 2.4 & 2.5 (DT3)</div>
+                <div class="q-text">Intérêt de l'Alodine, risques et protections.</div>
+                <div class="answer-content">
+                    <strong>Intérêt :</strong> Protection contre la corrosion par chromatation tout en maintenant une conductivité électrique de surface.
+                    <strong>Risques :</strong> Produit cancérogène (Chrome hexavalent), risque de sensibilisation cutanée et toxicité par inhalation.
+                    <strong>Protections :</strong> Gants étanches (nitrile), lunettes de protection, masque de protection respiratoire si ventilation insuffisante, blouse.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="q-header">Question 2.6 (DT4)</div>
+                <div class="q-text">Avantages du marqueur (coating pen).</div>
+                <div class="answer-content">
+                    1. Application précise (réduit la consommation de produits chimiques).
+                    2. Pas de rinçage nécessaire (technologie dry-in-place).
+                    3. Pas de génération de déchets secondaires (pas de pinceaux ou de chiffons souillés).
+                    4. Facilité d'utilisation dans les zones difficiles d'accès.
+                </div>
+            </div>
+        </section>
+
+        <!-- PARTIE 3 -->
+        <section>
+            <h2>Partie 3 : Gamme de perçage (Gamme opératoire)</h2>
+            <div class="question-block">
+                <div class="q-header">Question 3.1 (DT2 & DT5)</div>
+                <div class="answer-content">
+                    <table>
+                        <tr><th>Phase</th><th>Opération</th><th>Outillage / Ingrédients</th></tr>
+                        <tr><td>10</td><td>Nettoyage et préparation de la zone (WS 285.35)</td><td>Solvant approuvé</td></tr>
+                        <tr><td>20</td><td>Installation du gabarit DJIG 27-113-1 et alignement</td><td>Alignment tool, écrous, rondelles</td></tr>
+                        <tr><td>30</td><td>Perçage à l'aide de la scie cloche (Hole saw)</td><td>Perceuse, Hole saw 108, Boelube</td></tr>
+                        <tr><td>40</td><td>Ebavurage et contrôle dimensionnel</td><td>Ebavureur manuel</td></tr>
+                        <tr><td>50</td><td>Contrôle non destructif par ressuage (Type II)</td><td>Kit ressuage (NDTM 51-20-08)</td></tr>
+                        <tr><td>60</td><td>Traitement de surface à l'Alodine 1132</td><td>Coating Pen (Alodine)</td></tr>
+                        <tr><td>70</td><td>Identification de la nervure (PN 601R10033-2501)</td><td>Marqueur indélébile, vernis PU</td></tr>
+                    </table>
                 </div>
             </div>
         </section>
@@ -211,83 +247,93 @@
         <!-- PARTIE 4 -->
         <section>
             <h2>Partie 4 : Rentabilité et Fiabilité</h2>
-
+            
             <div class="question-block">
-                <div class="q-header"><span class="q-ref">Question 4.3</span> <span>(Indicateurs de fiabilité)</span></div>
+                <div class="q-header">Question 4.1 & 4.2 (DT6)</div>
                 <div class="answer-content">
-                    <table>
-                        <tr>
-                            <th>Indicateur</th>
-                            <th>Flotte Mondiale</th>
-                            <th>Flotte Compagnie</th>
-                        </tr>
-                        <tr>
-                            <td><strong>Dispatch Reliability (DR)</strong></td>
-                            <td>99,40%</td>
-                            <td><strong>98,96%</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Schedule Completion Rate (SCR)</strong></td>
-                            <td>99,60%</td>
-                            <td><strong>99,83%</strong></td>
-                        </tr>
-                    </table>
-                    <em>Note : La maintenance de la compagnie est efficace sur les annulations (SCR > Mondial) mais perfectible sur la ponctualité (DR < Mondial).</em>
+                    <strong>Implication MEL :</strong> Les BPSU ne sont pas dans la MEL (Minimum Equipment List). Toute défaillance entraîne l'immobilisation au sol (No-Go).
+                    <strong>Nombre de vols retenus :</strong> 8 640 vols (correspondant aux 8 640 cycles de vol rapportés).
                 </div>
             </div>
 
             <div class="question-block">
-                <div class="q-header"><span class="q-ref">Question 4.7</span> <span>(Calculs BPSU-9)</span></div>
+                <div class="q-header">Question 4.3 : Dispatch Reliability</div>
                 <div class="answer-content">
-                    Données : 9504 FH, 2 BPSU/avion, 16 déf. confirmées, 22 déposes.<br><br>
-                    - <span class="result-box">MTBF = (9504 × 2) / 16 = 1188 FH</span><br>
-                    - <span class="result-box">MTBUR = (9504 × 2) / 22 = 864 FH</span><br>
-                    - <span class="result-box">NFF = (1 - (864 / 1188)) × 100 = 27,3%</span><br>
-                    - <span class="result-box">DMC Atelier = (8000 / 1188) + (0,273 × (1200 / 864)) = 7,11 €/FH</span>
+                    Taux de fiabilité (Compagnie) = 100% × (1 - (75 retards + 15 annulations) / 8640) = <span class="result-box">98,96%</span>.
+                    Schedule Completion Rate = 100% × (1 - 15 / 8640) = <span class="result-box">99,83%</span>.
+                    <em>Analyse : La gestion des annulations est meilleure que la moyenne mondiale (99,83 vs 99,60), mais les retards techniques impactent lourdement la ponctualité.</em>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="q-header">Question 4.7 : Calculs de fiabilité BPSU-9 (N-1)</div>
+                <div class="answer-content">
+                    Heures de vol totales (Flotte) = 9 504 FH. Quantité BPSU = 2 par avion.
+                    MTBF = (9504 × 2) / 16 = <span class="result-box">1188 FH</span>
+                    MTBUR = (9504 × 2) / 22 = <span class="result-box">864 FH</span>
+                    NFF = (1 - (864 / 1188)) × 100 = <span class="result-box">27,3%</span>
+                    DMC Atelier = (8000 / 1188) + (0,273 × (1200 / 864)) = <span class="result-box">7,11 €/FH</span>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="q-header">Question 4.13 : Coûts de Retrofit</div>
+                <div class="answer-content">
+                    6 avions × 2 BPSU/avion × 14 500 € = <span class="result-box">174 000 €</span>.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="q-header">Question 4.18 : Rentabilité</div>
+                <div class="answer-content">
+                    En année N, l'investissement est lourd (Retrofits + Immobilisation). Cependant, le gain d'exploitation (réduction des retards/annulations de 3 fois) et la baisse du DMC atelier permettent une rentabilité dès l'année <span class="result-box">N+1</span>.
                 </div>
             </div>
         </section>
 
         <!-- PARTIE 5 -->
         <section>
-            <h2>Partie 5 : Application du SB et Planning</h2>
-
+            <h2>Partie 5 : Planning de Maintenance</h2>
+            
             <div class="question-block">
-                <div class="q-header"><span class="q-ref">Question 5.1</span> <span>(Planning Check A/C)</span></div>
+                <div class="q-header">Question 5.1</div>
                 <div class="answer-content">
-                    Nombre de Check A pour l'année N (basé sur l'utilisation réelle) : <span class="result-box">3 Check A</span>.<br>
-                    Nécessité de Check C : <span class="result-box">NON</span>. L'avion a 28 392 FH, le prochain Check C est à 30 000 FH (tous les 5000 FH).
+                    L'avion a volé 1 584 FH l'an dernier.
+                    Check A toutes les 500 FH -> 1584 / 500 = <span class="result-box">3 Check A</span> à prévoir.
+                    Check C : La dernière a été faite à 25 000 FH. Prochaine à 30 000 FH.
+                    Potentiel actuel : 28 392 FH. À la fin de l'année N : 28392 + 1584 = 29 976 FH. 
+                    Il faudra prévoir une <strong>Check C en toute fin d'année ou début N+1</strong>.
                 </div>
             </div>
         </section>
 
         <!-- PARTIE 6 -->
         <section>
-            <h2>Partie 6 : Suivi de navigabilité</h2>
+            <h2>Partie 6 : Navigabilité</h2>
 
             <div class="question-block">
-                <div class="q-header"><span class="q-ref">Question 6.2</span> <span>(Calcul de Centrage)</span></div>
+                <div class="q-header">Question 6.2 : Centrage (Calcul)</div>
                 <div class="answer-content">
-                    Modification de masse : <span class="result-box">+1.36 kg</span> à <span class="result-box">15.24 m</span>.<br>
-                    Nouveau Moment = 399 828,30 + (1,36 × 15,24) = 399 849,03 kg.m.<br>
-                    Nouvelle Masse = 19 629,50 + 1,36 = 19 630,86 kg.<br>
-                    <span class="result-box">Nouveau CG = 399 849,03 / 19 630,86 = 20,368 m</span><br>
-                    <strong>Nouveau %MAC = (20,368 - 18,875) / 3,3829 × 100 = 44,13%</strong>
+                    Modification de masse : +1,36 kg à 15,24 m.
+                    Nouveau Moment = 399 828,30 + (1,36 × 15,24) = 399 849,03 kg.m.
+                    Nouvelle Masse = 19 629,50 + 1,36 = 19 630,86 kg.
+                    Nouveau CG = 399 849,03 / 19 630,86 = <span class="result-box">20,368 m</span>.
+                    Position %MAC = (20,368 - 18,875) / 3,3829 × 100 = <span class="result-box">44,13%</span>.
                 </div>
             </div>
 
             <div class="question-block">
-                <div class="q-header"><span class="q-ref">Question 6.3</span> <span>(Pesée)</span></div>
+                <div class="q-header">Question 6.6</div>
+                <div class="q-text">Citer le type de document si la sécurité avait été engagée.</div>
                 <div class="answer-content">
-                    La pesée n'est pas obligatoire. La variation de masse (1,36 kg) représente moins de 0,01% de la masse maximale à l'atterrissage (30 390 kg), ce qui est bien inférieur au seuil réglementaire de <strong>0,5%</strong> défini dans le règlement UE 965/2012. Un simple ajustement par calcul suffit.
+                    Une <strong>Consigne de Navigabilité (AD : Airworthiness Directive)</strong>, émise par l'autorité de surveillance (<strong>EASA</strong> pour l'Europe).
                 </div>
             </div>
         </section>
 
         <footer style="margin-top: 50px; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px;">
-            <p class="mono" style="font-size: 0.8em; color: #95a5a6;">DOCUMENT PÉDAGOGIQUE - RÉSERVATION BTS AÉRONAUTIQUE - CRJ 200</p>
+            <p class="mono" style="font-size: 0.8em; color: #95a5a6;">CORRIGÉ TECHNIQUE OFFICIEL - MAINTENANCE CRJ 200 - BPSU SB</p>
         </footer>
     </div>
-
 </body>
 </html>
