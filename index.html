@@ -3,333 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corrigé Dossier Réponse - BTS AÉRONAUTIQUE - CRJ 200</title>
+    <title>Corrigé Complet - Dossier Réponse CRJ 200</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --aero-blue: #2c3e50;
-            --aero-red: #c0392b;
-            --bg-light: #f4f7f6;
-            --border-color: #bdc3c7;
-            --answer-color: #2980b9;
+            --aero-blue: #1c2833;
+            --aero-red: #a93226;
+            --bg-light: #ffffff;
+            --border-color: #d5dbdb;
+            --answer-bg: #fdfefe;
+            --highlight: #2e86c1;
         }
 
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: var(--bg-light);
+            background-color: #f2f4f4;
             margin: 0;
-            padding: 20px;
-            color: #333;
+            padding: 40px 20px;
+            color: #2c3e50;
             line-height: 1.6;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 950px;
             margin: 0 auto;
-            background: white;
-            padding: 40px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
+            background: var(--bg-light);
+            padding: 60px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--aero-red);
         }
 
         header {
             text-align: center;
-            border-bottom: 3px double var(--aero-blue);
-            margin-bottom: 30px;
+            border-bottom: 2px solid var(--aero-blue);
+            margin-bottom: 40px;
             padding-bottom: 20px;
         }
 
-        .exam-header {
+        .header-top {
             display: flex;
             justify-content: space-between;
-            font-weight: bold;
-            font-size: 0.9em;
-            margin-bottom: 10px;
+            font-size: 0.85em;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #7f8c8d;
         }
 
-        h1 { color: var(--aero-blue); text-transform: uppercase; margin: 10px 0; }
+        h1 { font-size: 2em; margin: 15px 0; color: var(--aero-blue); }
         h2 { 
-            background: var(--aero-blue); 
-            color: white; 
-            padding: 10px; 
-            font-size: 1.2em; 
-            margin-top: 40px;
-            border-left: 10px solid var(--aero-red);
+            background: #f8f9f9;
+            color: var(--aero-blue);
+            padding: 12px 20px;
+            font-size: 1.3em;
+            margin-top: 50px;
+            border-left: 5px solid var(--aero-red);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .question-box {
-            margin: 20px 0;
-            padding: 15px;
-            border: 1px solid #eee;
-            background: #fafafa;
+        .question-block {
+            margin: 25px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
         }
 
-        .question-label {
+        .q-header {
+            background: #fdf2f2;
+            padding: 10px 20px;
             font-weight: bold;
-            color: var(--aero-red);
-            display: block;
-            margin-bottom: 10px;
+            font-size: 0.95em;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
         }
 
-        .answer-text {
-            color: var(--answer-color);
+        .q-ref { color: var(--aero-red); }
+
+        .answer-content {
+            padding: 20px;
+            background: var(--answer-bg);
+            color: var(--highlight);
             font-weight: 500;
-            white-space: pre-wrap;
-            border-left: 3px solid var(--answer-color);
-            padding-left: 15px;
-            margin: 10px 0;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            font-size: 0.9em;
         }
 
         th, td {
             border: 1px solid var(--border-color);
-            padding: 10px;
+            padding: 12px;
             text-align: center;
         }
 
-        th { background: #ecf0f1; color: var(--aero-blue); }
+        th { background: #f4f6f7; color: var(--aero-blue); }
 
-        .dt-ref {
-            font-size: 0.8em;
-            color: #7f8c8d;
-            font-style: italic;
-            margin-left: 10px;
+        .schematic {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #fff;
+            border: 1px dashed #ccc;
         }
 
-        .nav-sidebar {
-            position: fixed;
-            left: 20px;
-            top: 100px;
-            width: 200px;
-            background: white;
-            padding: 15px;
-            border: 1px solid var(--border-color);
-            box-shadow: 5px 5px 10px rgba(0,0,0,0.05);
-        }
-
-        .nav-sidebar a {
-            display: block;
-            text-decoration: none;
-            color: var(--aero-blue);
-            font-size: 0.85em;
-            margin-bottom: 8px;
-        }
-
-        @media print {
-            .nav-sidebar, .btn-print { display: none; }
-            body { padding: 0; background: white; }
-            .container { box-shadow: none; border: none; width: 100%; }
+        .result-box {
+            display: inline-block;
+            padding: 5px 15px;
+            border-bottom: 2px solid var(--highlight);
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .btn-print {
             position: fixed;
-            right: 20px;
-            bottom: 20px;
+            right: 30px;
+            bottom: 30px;
             background: var(--aero-red);
             color: white;
             border: none;
-            padding: 15px 25px;
-            border-radius: 50px;
+            padding: 15px 30px;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
+            box-shadow: 0 5px 15px rgba(169, 50, 38, 0.3);
+            z-index: 100;
+        }
+
+        @media print {
+            .btn-print { display: none; }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; width: 100%; padding: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <nav class="nav-sidebar">
-        <strong>Navigation Corrigé</strong>
-        <hr>
-        <a href="#part1">Partie 1: Validation</a>
-        <a href="#part2">Partie 2: Réparation</a>
-        <a href="#part3">Partie 3: Processus</a>
-        <a href="#part4">Partie 4: Fiabilité/Coûts</a>
-        <a href="#part5">Partie 5: Planning</a>
-        <a href="#part6">Partie 6: Navigabilité</a>
-    </nav>
-
-    <button class="btn-print" onclick="window.print()">IMPRIMER LE CORRIGÉ</button>
+    <button class="btn-print" onclick="window.print()">IMPRIMER LE DOSSIER</button>
 
     <div class="container">
         <header>
-            <div class="exam-header">
-                <span>BTS AÉRONAUTIQUE - CORRIGÉ</span>
+            <div class="header-top">
+                <span>BTS AÉRONAUTIQUE - E3</span>
                 <span>Session 2024</span>
             </div>
-            <h1>Étude de processus d'assemblage ou de maintenance</h1>
-            <p><strong>SUJET : BPSU (BRAKE AND POSITION SENSOR UNIT) - CRJ 200</strong></p>
+            <h1>Étude de processus de maintenance</h1>
+            <p><strong>Dossier Corrigé : Brake and Position Sensor Unit (BPSU) - Bombardier CRJ 200</strong></p>
         </header>
 
-        <section id="part1">
-            <h2>PARTIE 1 - Validation du besoin de réparation</h2>
+        <!-- PARTIE 1 -->
+        <section>
+            <h2>Partie 1 : Validation du besoin de réparation</h2>
             
-            <div class="question-box">
-                <span class="question-label">Question 1.1 <span class="dt-ref">(Ref DT1)</span></span>
-                <p>Donner les six "informations" (en anglais) transmises par le BPSU et citer le système de recueil :</p>
-                <div class="answer-text">
-1. Position Monitoring
-2. Asymmetry
-3. Overspeed
-4. Underspeed
-5. Direction of rotation
-6. Uncommanded movement
-
-Système de recueil : Le FECU (Flap Electronic Control Unit).
+            <div class="question-block">
+                <div class="q-header"><span class="q-ref">Question 1.1</span> <span>(Données BPSU)</span></div>
+                <div class="answer-content">
+                    Les six informations transmises par le BPSU sont : 
+                    <em>1. Position Monitoring, 2. Asymmetry, 3. Overspeed, 4. Underspeed, 5. Direction of rotation, 6. Uncommanded movement.</em><br><br>
+                    Le système qui recueille ces données est le <strong>FECU (Flap Electronic Control Unit)</strong>.
                 </div>
             </div>
 
-            <div class="question-box">
-                <span class="question-label">Question 1.2</span>
-                <p>Conséquences d'une dissymétrie de sortie de volet en phase critique :</p>
-                <div class="answer-text">
-Une dissymétrie provoque un moment de roulis important et incontrôlable, pouvant entraîner une perte de contrôle de l'aéronef ou un décrochage asymétrique, particulièrement dangereux à basse altitude lors du décollage ou de l'approche finale.
-                </div>
-            </div>
-
-            <div class="question-box">
-                <span class="question-label">Question 1.3</span>
-                <p>Préconisation temporaire pertinente :</p>
-                <div class="answer-text">
-Instaurer une inspection visuelle répétitive (Daily Check ou toutes les 50 FH) du harnais électrique au niveau de la nervure WS 285.35 pour détecter tout signe précoce d'usure ou de frottement.
+            <div class="question-block">
+                <div class="q-header"><span class="q-ref">Question 1.2</span> <span>(Sécurité)</span></div>
+                <div class="answer-content">
+                    Une dissymétrie de sortie des volets en phase critique (décollage/approche) génère un déséquilibre de portance entre les deux ailes, provoquant un moment de roulis violent. Sans action immédiate, cela conduit au décrochage d'une aile et à la perte de contrôle de l'aéronef.
                 </div>
             </div>
         </section>
 
-        <section id="part2">
-            <h2>PARTIE 2 - Proposition d'une réparation</h2>
+        <!-- PARTIE 2 -->
+        <section>
+            <h2>Partie 2 : Proposition d'une réparation</h2>
 
-            <div class="question-box">
-                <span class="question-label">Question 2.2 <span class="dt-ref">(Calcul des cotes X1 et Y1)</span></span>
-                <p>Transformation de la cotation angulaire (R=39mm, 120°) en cotation linéaire :</p>
-                <div class="answer-text">
-D'après la géométrie (triangle rectangle 30/60/90) :
-X1 = R * sin(60°) = 39 * 0,866 = 33,77 mm
-Y1 = R * cos(60°) = 39 * 0,5 = 19,50 mm
+            <div class="question-block">
+                <div class="q-header"><span class="q-ref">Question 2.1</span> <span>(Solution de Mise en Position - MIP)</span></div>
+                <div class="answer-content">
+                    La solution proposée dans le Service Bulletin (SB) pour garantir la MIP du <strong>drill jig (DJIG)</strong> consiste à utiliser les 3 trous de fixation existants du BPSU sur la nervure. <br><br>
+                    Le canon est centré à l'aide d'un <strong>alignment tool (4)</strong> engagé dans le trou pilote de 0,625 pouce. Le technicien doit ensuite aligner le repère de l'outil avec celui du gabarit avant de serrer les écrous manuellement pour garantir un perçage parfaitement concentrique.
                 </div>
             </div>
 
-            <div class="question-box">
-                <span class="question-label">Question 2.3</span>
-                <p>Étapes du mode opératoire du ressuage :</p>
-                <div class="answer-text">
-1. Pré-nettoyage et séchage de la zone percée.
-2. Application du pénétrant (Type II).
-3. Temps d'imprégnation (Dwell time).
-4. Élimination de l'excès de pénétrant.
-5. Séchage.
-6. Application du révélateur.
-7. Inspection (détection de criques éventuelles).
-8. Post-nettoyage.
+            <div class="question-block">
+                <div class="q-header"><span class="q-ref">Question 2.2</span> <span>(Calcul de cotation linéaire)</span></div>
+                <div class="schematic">
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="78" fill="none" stroke="#ccc" stroke-dasharray="4"/>
+                        <circle cx="100" cy="100" r="3" fill="#000"/>
+                        <line x1="100" y1="100" x2="167" y2="61" stroke="red" stroke-width="2"/>
+                        <text x="110" y="80" font-size="12" fill="red">R = 39mm</text>
+                        <circle cx="167" cy="61" r="5" fill="blue"/>
+                        <path d="M 100 22 A 78 78 0 0 1 167 61" fill="none" stroke="blue" stroke-width="1"/>
+                        <text x="130" y="40" font-size="10" fill="blue">120°</text>
+                    </svg>
+                    <p style="font-size: 0.8em; color: #666;">Schéma de principe : Passage de la cotation angulaire à linéaire (X1, Y1)</p>
                 </div>
-            </div>
-        </section>
-
-        <section id="part4">
-            <h2>PARTIE 4 - Analyse de la fiabilité opérationnelle</h2>
-            
-            <div class="question-box">
-                <p><strong>Tableau 1 : Comparaison de la fiabilité (Année N-1)</strong></p>
-                <table>
-                    <tr>
-                        <th>Indicateur</th>
-                        <th>Flotte Mondiale</th>
-                        <th>Flotte Compagnie</th>
-                    </tr>
-                    <tr>
-                        <td>Dispatch Reliability (DR)</td>
-                        <td>99,4%</td>
-                        <td style="color:var(--answer-color)">98,96%</td>
-                    </tr>
-                    <tr>
-                        <td>Schedule Completion Rate (SCR)</td>
-                        <td>99,6%</td>
-                        <td style="color:var(--answer-color)">99,83%</td>
-                    </tr>
-                </table>
-                <p class="dt-ref">*DR = 1 - (90/8640) | SCR = 1 - (15/8640)</p>
-            </div>
-
-            <div class="question-box">
-                <span class="question-label">Question 4.7 <span class="dt-ref">(BPSU P/N: 601R93105-9)</span></span>
-                <table>
-                    <tr>
-                        <th>Indicateur</th>
-                        <th>Résultat Corrigé</th>
-                    </tr>
-                    <tr>
-                        <td>MTBF (Heures de vol)</td>
-                        <td style="color:var(--answer-color)">1188 FH</td>
-                    </tr>
-                    <tr>
-                        <td>MTBUR (Heures de vol)</td>
-                        <td style="color:var(--answer-color)">864 FH</td>
-                    </tr>
-                    <tr>
-                        <td>NFF (%)</td>
-                        <td style="color:var(--answer-color)">27,3%</td>
-                    </tr>
-                    <tr>
-                        <td>DMC Atelier (€/FH)</td>
-                        <td style="color:var(--answer-color)">7,11 €/FH</td>
-                    </tr>
-                </table>
-            </div>
-        </section>
-
-        <section id="part5">
-            <h2>PARTIE 5 - Application du SB sur la flotte</h2>
-
-            <div class="question-box">
-                <span class="question-label">Question 5.1</span>
-                <div class="answer-text">
-Nombre de Check A à prévoir (MSN 7501) : 3 visites.
-(Basé sur ~1584 FH annuels / 500 FH par Check A).
-
-Check C : Non nécessaire. 
-L'avion a 28 392 FH. Le prochain Check C est à 30 000 FH (tous les 10 Check A soit 5000 FH, dernier à 25 000 FH).
-                </div>
-            </div>
-
-            <div class="question-box">
-                <span class="question-label">Question 5.3 - Moyens Humains</span>
-                <div class="answer-text">
-Pour réaliser les SB 113 et 122 en une vacation de 8h utiles :
-Il faut 2 techniciens (MEC) travaillant en parallèle sur chaque aile (total 4 MEC). 
-Le CEQ assure la coordination et le CTL valide l'inspection finale et le ressuage.
+                <div class="answer-content">
+                    Considérant un rayon de 39 mm (diamètre 78 mm) et un angle de 120° (soit 30° par rapport à l'horizontale pour le trou supérieur) :<br>
+                    <span class="result-box">X1 = 39 × sin(60°) = 33,77 mm</span><br>
+                    <span class="result-box">Y1 = 39 × cos(60°) = 19,50 mm</span>
                 </div>
             </div>
         </section>
 
-        <section id="part6">
-            <h2>PARTIE 6 - Suivi de navigabilité</h2>
-            
-            <div class="question-box">
-                <span class="question-label">Question 6.1</span>
-                <p>Documents concernés par le Close-Out :</p>
-                <div class="answer-text">
-1. Weight and Balance Manual (WBM).
-2. Aircraft Logbooks (Livret aéronef).
-3. Configuration management system (Suivi de navigabilité/PN).
+        <!-- PARTIE 4 -->
+        <section>
+            <h2>Partie 4 : Rentabilité et Fiabilité</h2>
+
+            <div class="question-block">
+                <div class="q-header"><span class="q-ref">Question 4.3</span> <span>(Indicateurs de fiabilité)</span></div>
+                <div class="answer-content">
+                    <table>
+                        <tr>
+                            <th>Indicateur</th>
+                            <th>Flotte Mondiale</th>
+                            <th>Flotte Compagnie</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Dispatch Reliability (DR)</strong></td>
+                            <td>99,40%</td>
+                            <td><strong>98,96%</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Schedule Completion Rate (SCR)</strong></td>
+                            <td>99,60%</td>
+                            <td><strong>99,83%</strong></td>
+                        </tr>
+                    </table>
+                    <em>Note : La maintenance de la compagnie est efficace sur les annulations (SCR > Mondial) mais perfectible sur la ponctualité (DR < Mondial).</em>
                 </div>
             </div>
 
-            <div class="question-box">
-                <span class="question-label">Question 6.3</span>
-                <p>Justification de la pesée :</p>
-                <div class="answer-text">
-Une pesée n'est pas réglementairement obligatoire ici car la modification de masse (+1.36 kg) représente moins de 0.007% de la masse maximale à l'atterrissage (loin du seuil de 0.5% fixé par le règlement EU 965/2012). L'ajustement par calcul est suffisant.
+            <div class="question-block">
+                <div class="q-header"><span class="q-ref">Question 4.7</span> <span>(Calculs BPSU-9)</span></div>
+                <div class="answer-content">
+                    Données : 9504 FH, 2 BPSU/avion, 16 déf. confirmées, 22 déposes.<br><br>
+                    - <span class="result-box">MTBF = (9504 × 2) / 16 = 1188 FH</span><br>
+                    - <span class="result-box">MTBUR = (9504 × 2) / 22 = 864 FH</span><br>
+                    - <span class="result-box">NFF = (1 - (864 / 1188)) × 100 = 27,3%</span><br>
+                    - <span class="result-box">DMC Atelier = (8000 / 1188) + (0,273 × (1200 / 864)) = 7,11 €/FH</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- PARTIE 5 -->
+        <section>
+            <h2>Partie 5 : Application du SB et Planning</h2>
+
+            <div class="question-block">
+                <div class="q-header"><span class="q-ref">Question 5.1</span> <span>(Planning Check A/C)</span></div>
+                <div class="answer-content">
+                    Nombre de Check A pour l'année N (basé sur l'utilisation réelle) : <span class="result-box">3 Check A</span>.<br>
+                    Nécessité de Check C : <span class="result-box">NON</span>. L'avion a 28 392 FH, le prochain Check C est à 30 000 FH (tous les 5000 FH).
+                </div>
+            </div>
+        </section>
+
+        <!-- PARTIE 6 -->
+        <section>
+            <h2>Partie 6 : Suivi de navigabilité</h2>
+
+            <div class="question-block">
+                <div class="q-header"><span class="q-ref">Question 6.2</span> <span>(Calcul de Centrage)</span></div>
+                <div class="answer-content">
+                    Modification de masse : <span class="result-box">+1.36 kg</span> à <span class="result-box">15.24 m</span>.<br>
+                    Nouveau Moment = 399 828,30 + (1,36 × 15,24) = 399 849,03 kg.m.<br>
+                    Nouvelle Masse = 19 629,50 + 1,36 = 19 630,86 kg.<br>
+                    <span class="result-box">Nouveau CG = 399 849,03 / 19 630,86 = 20,368 m</span><br>
+                    <strong>Nouveau %MAC = (20,368 - 18,875) / 3,3829 × 100 = 44,13%</strong>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="q-header"><span class="q-ref">Question 6.3</span> <span>(Pesée)</span></div>
+                <div class="answer-content">
+                    La pesée n'est pas obligatoire. La variation de masse (1,36 kg) représente moins de 0,01% de la masse maximale à l'atterrissage (30 390 kg), ce qui est bien inférieur au seuil réglementaire de <strong>0,5%</strong> défini dans le règlement UE 965/2012. Un simple ajustement par calcul suffit.
                 </div>
             </div>
         </section>
 
         <footer style="margin-top: 50px; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px;">
-            <p class="mono" style="font-size: 0.8em;">CORRIGÉ TECHNIQUE - PROJET PÉDAGOGIQUE BTS AÉRO</p>
+            <p class="mono" style="font-size: 0.8em; color: #95a5a6;">DOCUMENT PÉDAGOGIQUE - RÉSERVATION BTS AÉRONAUTIQUE - CRJ 200</p>
         </footer>
     </div>
+
 </body>
 </html>
